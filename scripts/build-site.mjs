@@ -86,9 +86,9 @@ function layout({ title, description, body, canonicalPath }) {
   const canonical = `${siteOrigin}/${canonicalPath.replace(/^\/+/, "")}`;
   const navLinks = [
     { label: "Home", href: "/index.html" },
-    { label: "All Prompts", href: "/index.html#prompts" },
-    { label: "GitHub", href: publicRepoUrl },
-    { label: "Skills", href: "https://skills.zondev.top/" }
+    { label: "Categories", href: "/index.html#categories" },
+    { label: "Featured", href: "/index.html#prompts" },
+    { label: "GitHub", href: publicRepoUrl }
   ];
 
   return `<!doctype html>
@@ -157,18 +157,18 @@ function buildHome({ index, prompts, categories }) {
   const body = `<main class="page">
   <section class="hero">
     <div>
-      <p class="eyebrow">Prompt-Only Frontend</p>
-      <h1 class="hero-title">Pure prompts, separate from skills.</h1>
-      <p class="hero-copy">这里不再讨论 skills，也不再把 prompt 当成迁移入口。这个站点只做 prompt：浏览、打开、复制、回到 GitHub 查看源文件。</p>
+      <p class="eyebrow">Prompt Library</p>
+      <h1 class="hero-title">Reusable prompts, organized by scene.</h1>
+      <p class="hero-copy">这个站点只做 prompt 本身：按场景浏览，打开详情，直接复制，需要时再回到 GitHub 查看源文件和版本历史。</p>
       <div class="hero-actions">
-        <a ${anchorAttrs("/index.html#prompts", "button")}>Browse Prompts</a>
+        <a ${anchorAttrs("/index.html#categories", "button")}>Browse Categories</a>
+        <a ${anchorAttrs("/index.html#prompts", "ghost-button")}>Browse Featured</a>
         <a ${anchorAttrs(publicRepoUrl, "ghost-button")}>Open GitHub</a>
-        <a ${anchorAttrs("https://skills.zondev.top/", "ghost-button")}>Open Skills</a>
       </div>
     </div>
     <div class="hero-side">
       <div class="hero-note"><strong>Copy-first</strong>详情页把 prompt 内容直接展开，并提供稳定的复制动作。</div>
-      <div class="hero-note"><strong>Prompt-only</strong>这个前台不再承接 skills 的发现逻辑，信息结构彻底分开。</div>
+      <div class="hero-note"><strong>Scene-based</strong>保持应用场景作为最小组织单位，先判断用途，再进入具体 prompt。</div>
       <div class="hero-note"><strong>Repo-backed</strong>每条 prompt 都能回到 GitHub 中对应的分类源文件。</div>
     </div>
   </section>
@@ -180,7 +180,7 @@ function buildHome({ index, prompts, categories }) {
     <div><span class="stat-value">${escapeHtml(syncLabel)}</span><span class="stat-label">Last Sync</span></div>
   </section>
 
-  <section class="section">
+  <section class="section" id="categories">
     <div class="section-header">
       <div>
         <p class="section-kicker">Categories</p>
@@ -196,10 +196,10 @@ function buildHome({ index, prompts, categories }) {
   <section class="section" id="prompts">
     <div class="section-header">
       <div>
-        <p class="section-kicker">Prompts</p>
+        <p class="section-kicker">Featured</p>
         <h2 class="section-title">先打开，再复制</h2>
       </div>
-      <div class="section-summary">首页只展示最值得先看的 prompt 卡片；完整内容在详情页里展开，避免首页被超长文本淹没。</div>
+      <div class="section-summary">首页先呈现一组值得优先查看的 prompt；完整内容在详情页里展开，按场景浏览则放在上方 categories。</div>
     </div>
     <div class="prompt-grid">
       ${featured.map((prompt) => renderPromptCard(prompt)).join("\n")}
