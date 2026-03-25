@@ -1,0 +1,340 @@
+[
+  {
+    "id": "codex-prompting-guide",
+    "title": "Codex提示词指南",
+    "description": "OpenAI Codex官方推荐的最佳提示词和使用文档整理",
+    "content": "# OpenAI Codex 提示词指南\n\n## 官方提示词指南（最权威）\nOpenAI官方提供的完整\"Prompting Guide\"，详细说明了提示词设计原则、示例用法和编码任务的最佳实践。\n\n## 初学者快速参考（中文指南）\n基于官方\"Example prompts\"，提供7个实战级示例，包括：\n- 将类组件重构为React Hooks\n- 自动生成数据库迁移脚本\n- 编写单元测试\n- 批量重构代码、修改文件扩展名\n\n## 进阶实战教程与案例探索\n总结了官方推荐的\"7大应用场景 + 17条提示词 + 6大实践技巧\"。\n\n## 提示词设计基本原则\n1. 指令放前面，明确任务\n2. 展示示例而非仅告诉\n3. 具体描述期望\n4. 用示例限定输出格式\n5. 先试Zero-shot，再升级到Few-shot\n6. 代码提示可用Leading Words",
+    "kind": "skill",
+    "goal": "OpenAI Codex官方推荐的最佳提示词和使用文档整理 Codex提示词指南",
+    "inputs": [
+      {
+        "name": "question",
+        "required": true,
+        "description": "研究问题/要回答的关键问题"
+      },
+      {
+        "name": "scope",
+        "description": "范围与口径（时间/地域/对象/排除项）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（时间、数据可得性、输出形式等）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望输出（要多长、给谁看）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "拆解问题",
+        "description": "将研究问题拆成可验证子问题，明确范围与口径。"
+      },
+      {
+        "title": "收集证据",
+        "description": "列出可获取的数据/信号源与验证路径，标注不确定性。"
+      },
+      {
+        "title": "综合与推断",
+        "description": "把证据组织成结论链路，区分事实/假设/推断。"
+      },
+      {
+        "title": "输出报告",
+        "description": "按读者友好的结构输出结论、依据、建议与风险。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Executive Summary\n- 结论（3-5 条）\n\n## Findings & Evidence\n- 发现：…\n  - 依据/信号：…\n  - 不确定性：…\n\n## Recommendations\n- 建议：…（说明收益/成本/风险）\n\n## Caveats\n- 口径与限制：…\n\n## Next Steps\n- 下一步验证：…",
+    "checklist": [
+      "是否明确范围与口径？",
+      "证据链是否清晰，是否区分事实/推断？",
+      "是否标注不确定性与风险？",
+      "结论是否可行动，建议是否可落地？"
+    ],
+    "category": "research",
+    "tags": [
+      "Codex提示词 (Codex)",
+      "提示词工程",
+      "OpenAI平台 (OpenAI)",
+      "编程辅助"
+    ],
+    "source": [
+      "https://developers.openai.com/codex/prompting/",
+      "https://blog.csdn.net/zsr154278963/article/details/151899166",
+      "https://blog.csdn.net/libaiup/article/details/152554392",
+      "https://juejin.cn/post/7247171329455276093"
+    ],
+    "examples": [
+      {
+        "input": "示例输入",
+        "output": "示例输出"
+      }
+    ],
+    "tips": [
+      "根据任务复杂度选择合适的提示方式",
+      "参考官方示例进行提示词设计"
+    ],
+    "metadata": {
+      "owner": "prompt-hub",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "research",
+      "skillSource": "auto"
+    }
+  },
+  {
+    "id": "claude-three-layer-thinking",
+    "title": "Claude三层思维模式",
+    "description": "面向Linus Torvalds的三层架构工作模式：现象层、本质层、哲学层",
+    "content": "# 三层思维架构\n\n## 认知与工作的三层架构\nBug 现象层 <----- (接收问题和最终修复的层)\n  ↕\n  ↕ [症状收集] [快速修复] [具体方案]\n  ↕\n架构本质层 <----- (真正排查和分析的层)\n  ↕\n  ↕ [根因分析] [系统诊断] [模式识别]\n  ↕\n代码哲学层 <----- (深度思考和升华的层)\n\n       [设计理念] [架构美学] [本质规律]\n\n## 思维的循环路径\n\"我的代码报错了\" ───→ [接收@现象层]\n   ↓\n[下潜@本质层]\n   ↓\n[升华@哲学层]\n   ↓\n[整合@本质层]\n   ↓\n\"解决方案+深度洞察\" ←─── [输出@现象层]\n\n## 工作模式：三层穿梭\n1. 现象层接收：收集症状和表面问题\n2. 本质层诊断：分析系统问题和设计缺陷\n3. 哲学层思考：探索本质规律和设计哲学\n4. 现象层输出：提供修复方案和深度洞察",
+    "kind": "skill",
+    "goal": "面向Linus Torvalds的三层架构工作模式：现象层、本质层、哲学层 Claude三层思维模式",
+    "inputs": [
+      {
+        "name": "question",
+        "required": true,
+        "description": "研究问题/要回答的关键问题"
+      },
+      {
+        "name": "scope",
+        "description": "范围与口径（时间/地域/对象/排除项）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（时间、数据可得性、输出形式等）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望输出（要多长、给谁看）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "拆解问题",
+        "description": "将研究问题拆成可验证子问题，明确范围与口径。"
+      },
+      {
+        "title": "收集证据",
+        "description": "列出可获取的数据/信号源与验证路径，标注不确定性。"
+      },
+      {
+        "title": "综合与推断",
+        "description": "把证据组织成结论链路，区分事实/假设/推断。"
+      },
+      {
+        "title": "输出报告",
+        "description": "按读者友好的结构输出结论、依据、建议与风险。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Executive Summary\n- 结论（3-5 条）\n\n## Findings & Evidence\n- 发现：…\n  - 依据/信号：…\n  - 不确定性：…\n\n## Recommendations\n- 建议：…（说明收益/成本/风险）\n\n## Caveats\n- 口径与限制：…\n\n## Next Steps\n- 下一步验证：…",
+    "checklist": [
+      "是否明确范围与口径？",
+      "证据链是否清晰，是否区分事实/推断？",
+      "是否标注不确定性与风险？",
+      "结论是否可行动，建议是否可落地？"
+    ],
+    "category": "research",
+    "tags": [
+      "Claude助手 (Claude)",
+      "思维模式",
+      "架构哲学",
+      "代码质量"
+    ],
+    "examples": [
+      {
+        "input": "示例输入",
+        "output": "示例输出"
+      }
+    ],
+    "tips": [
+      "使用三层结构分析复杂技术问题",
+      "从现象到本质再到哲学进行深度思考"
+    ],
+    "metadata": {
+      "owner": "prompt-hub",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "research",
+      "skillSource": "auto"
+    }
+  },
+  {
+    "id": "historic-firsts-biography",
+    "title": "人物第一人传记生成",
+    "description": "生成真实女性第一人的事实核查式人物故事，并输出可检索的时间线",
+    "content": "# 人物第一人传记生成\n\n## 任务说明\n查询网络，寻找真实历史中在各专业领域率先突破的女性人物。输出聚焦他们的出生背景、关键成就、年份与年龄节点，确保所有信息可被公开资料核验。禁止虚构与夸张修辞。\n\n## 输出格式\n- 以时间顺序写作，给出年份与对应年龄\n- 说明人物影响力与制度、法律或行业的可量化变化\n- 不使用 Markdown 额外格式，只输出纯文本段落\n- 遇到资料缺口时明确说明“暂无可靠记载”\n\n## 事实写作策略\n1. 先列出可验证的一手或权威二手来源，再撰写正文\n2. 对每个重大事件交代背景、行动、结果三要素\n3. 项目或作品产出需写明发布年份、参与机构与结局\n4. 如果存在争议人物，先对历史共识与异议双方给出概览\n\n## 人物案例库\n### 女权第一人 · 玛丽·沃斯通克拉夫特\n1759 年生于伦敦的玛丽·沃斯通克拉夫特在 17 岁时外出任家庭教师以缓解家计。1787 年出版《关于女儿教育的思考》，提出男女平等受教权。1792 年完成《女权辩护》，首版 500 册两周售罄。1792 年 12 月赴法国记录革命，1794 年与商人吉尔伯特·伊姆利同居并育有女儿范妮。1796 年与威廉·葛德文结婚，签署平等婚姻契约。1797 年生下玛丽·雪莱后因产褥热去世，终年 38 岁。1832 年英国议会改革时期其著作被再版，人权运动将其视为开创者。\n\n### 医生第一人 · 伊丽莎白·布莱克威尔\n1821 年 2 月 3 日出生于英国布里斯托尔，后随家人移居美国纽约。父亲去世后与姐妹在辛辛那提办私立学校维持生计。1845 年起申请 29 所医学院均被拒。1847 年纽约日内瓦医学院学生投票同意录取，她成为首位女学生。1849 年以班级第一毕业，成为美国首位获得医学学位的女性。1853 年在纽约开设贫困妇女儿童诊所，1857 年创立纽约贫困妇女儿童医院并培训护士。1868 年建立附属女子医学院，培养 300 名女医生。1871 年参与创建英国国家卫生协会。1910 年 5 月 31 日因中风在苏格兰去世，将遗产捐给女性医学生。\n\n### 消防第一人 · 莫莉·威廉姆斯\n出生于 18 世纪中期西印度群岛的莫莉·威廉姆斯被带到纽约为富商本杰明·埃克福德工作。1818 年随雇主加入 Oceanus Engine Company 11 消防队。1819 至 1820 年纽约黄热病大流行期间，她独自拉动 30 公斤手动消防泵参与多起灭火，被同伴称作 Volunteer No.11。1825 年纽约消防局成立后继续服役直至 1840 年代。1846 年《纽约论坛报》记录她退休时年约 90 岁，具体去世时间缺乏可靠记载。事迹被美国消防协会档案收录，纽约市政厅保存有其雇主的消防队成员登记。\n\n### 马拉松第一人 · 凯瑟琳·斯威策\n1947 年生于德国安贝格的凯瑟琳·斯威策 1967 年以縮写 K.V. Switzer 报名波士顿马拉松。4 月 19 日比赛途中裁判乔克·森普尔试图撕下她的 261 号号码布，被陪跑员汤姆·米勒阻挡。她以 4 小时 20 分完成赛事，成为首位拥有正式号码并完成波士顿马拉松的女性。事件推动赛事在 1972 年向女性开放报名，斯威策本人 1974 年以 3 小时 07 分 29 秒赢得纽约马拉松女子组冠军，2017 年赛事方退役 261 号号码以示纪念。\n\n### 建筑师第一人 · 路易丝·布朗歇·贝休恩\n1856 年 7 月 21 日出生于美国纽约州沃特敦，12 岁随家迁往布法罗。1876 年进入理查德·沃特工作室成为美国首位登记在案的女性建筑学徒。1881 年与丈夫创建贝休恩事务所，成为美国第一位独立执业女建筑师。1885 年设计布法罗公立第 12 小学引入现代卫生设施，1888 年落成的布法罗酒店现为国家历史地标。1889 年加入美国建筑师学会成为首位女性会员，1905 年因健康问题退休，1915 年 12 月 18 日因肺炎去世。作品包括伊利县储蓄银行、圣玛丽圣公会教堂与 18 层的 Dun Building。\n\n### 避孕运动第一人 · 玛格丽特·桑格\n1879 年 9 月 14 日出生于纽约州科宁，1900 年进入护士学校。1914 年创办《叛逆妇女》月刊宣传节育，因触犯康斯托克法被迫流亡英国。1916 年在布鲁克林开设美国首家节育诊所并遭拘捕。1921 年创立美国生育控制联盟（后为计划生育协会），1923 年成立临床研究局，1936 年推动美国诉 One Package 案判决允许医生邮寄避孕工具。1952 年出任国际计划生育联合会首任主席，1965 年见证最高法院在格里斯沃尔德案确认已婚夫妇避孕权。1966 年 9 月 6 日因动脉硬化去世，享年 86 岁。\n\n### 男女平等倡导第一人 · 伊丽莎白·凯第·史丹顿\n1815 年 11 月 12 日生于纽约州约翰斯敦，排行第八。1832 年成为首位从约翰斯敦学院毕业的女性。1840 年与废奴主义者亨利·史丹顿结婚并育有七子女。1848 年与卢克丽霞·莫特共同组织塞内卡瀑布女权大会并起草《女权宣言》。1866 年与苏珊·安东尼成立美国平权协会，1868 年创办《革命》报纸。1880 年代推动纽约通过《已婚妇女财产法》。1890 年出任全国妇女选举权协会首任主席。1902 年 10 月 26 日在纽约因心力衰竭去世，享年 86 岁。\n\n### 法老共治第一人 · 娜芙蒂蒂\n约公元前 1370 年出生于底比斯贵族家庭，青少年时期成为阿蒙霍特普四世王后。公元前 1352 年随丈夫在阿赫塔顿建立阿吞一神信仰，官方文献称其为“拥有双权的女王”。公元前 1342 年（28 岁）签署军政敕令，与配偶共同主持祭典。公元前 1338 年埃赫那吞去世后继续统治近三年，柏林埃及博物馆留有其敕令泥板。公元前 1335 年从记录中消失，2010 年 DNA 检测证实其木乃伊安葬于 KV35 墓室，享年约 40 岁。她推动阿马尔纳艺术风格，留下多幅与法老同规格的统治形象。\n",
+    "kind": "skill",
+    "goal": "生成真实女性第一人的事实核查式人物故事，并输出可检索的时间线 人物第一人传记生成",
+    "inputs": [
+      {
+        "name": "question",
+        "required": true,
+        "description": "研究问题/要回答的关键问题"
+      },
+      {
+        "name": "scope",
+        "description": "范围与口径（时间/地域/对象/排除项）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（时间、数据可得性、输出形式等）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望输出（要多长、给谁看）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "拆解问题",
+        "description": "将研究问题拆成可验证子问题，明确范围与口径。"
+      },
+      {
+        "title": "收集证据",
+        "description": "列出可获取的数据/信号源与验证路径，标注不确定性。"
+      },
+      {
+        "title": "综合与推断",
+        "description": "把证据组织成结论链路，区分事实/假设/推断。"
+      },
+      {
+        "title": "输出报告",
+        "description": "按读者友好的结构输出结论、依据、建议与风险。"
+      }
+    ],
+    "outputContract": "请用纯文本输出（不要 Markdown / 不要列表符号 / 不要标题符号）。\n\n按时间顺序写人物故事，从出生到去世（或最后可核验节点）。\n每个关键事件节点必须包含：年份、人物年龄、事件、影响、来源线索（括号内）。\n若资料缺口或存在争议，写明“暂无可靠记载/存在不同说法”并给出来源线索。\n不要写额外备注或评价性修辞。",
+    "checklist": [
+      "是否明确范围与口径（领域/地域/时间/“第一人”定义）？",
+      "是否按时间顺序写出年份与人物年龄？",
+      "是否每个关键事件都提供可检索的来源线索？",
+      "是否区分事实/推断，并标注不确定与争议？",
+      "是否按要求只输出纯文本段落（不使用 Markdown）？"
+    ],
+    "category": "research",
+    "tags": [
+      "历史研究",
+      "女性人物",
+      "事实核查"
+    ],
+    "source": [],
+    "examples": [
+      {
+        "input": "示例输入",
+        "output": "示例输出"
+      }
+    ],
+    "tips": [
+      "在撰写正文前记录所有可验证来源，必要时保留引用路径",
+      "事件节点建议按时间顺序列出并补充人物年龄",
+      "若资料缺失需明确说明而非猜测补全"
+    ],
+    "metadata": {
+      "owner": "prompt-hub",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "research",
+      "skillSource": "curated"
+    }
+  },
+  {
+    "id": "issue-27-agent-skills-extraction",
+    "title": "Issue #27 Agent Skills 线索提取（可验证版）",
+    "description": "把 myObsidian#27 中可读取的线索整理为结构化技能条目，优先沉淀 OpenClaw / ClawHub / Remotion 方向。",
+    "content": "# Issue #27 Agent Skills 线索提取\n\n## What it solves\n将零散的社媒短链、评论和二次转述，收敛为可追溯、可验证、可继续加工的技能线索库，避免“收藏很多但无法复用”。\n\n## 可确认主题（基于已可读取报告）\n- Agent Skills 结构化提取与去重\n- OpenClaw / ClawHub / skills.sh 适配方向\n- Remotion 视频工作流（脚本 -> 渲染）\n- Vibe Coding UI 提升与前端设计技巧\n- Research / 写作 / 数据分析类技能的归档与评估\n\n## 执行模板\n1. 抽取并去重 URL（issue 正文 + 评论）\n2. 标注来源可信度（原文可读 / 仅短链标题 / 无法核验）\n3. 按统一字段结构化（输入、输出、依赖、安装方式、边界）\n4. 做 5 维评分（可复用性、维护活跃、依赖复杂度、风险、解释性）\n5. 导出为平台可用格式（JSON/YAML/manifest）\n\n## 注意事项\n- 无法直接打开的短链必须标记为“待核验”，不要写成确定事实\n- 热度、安装量、星标等数字必须回到一手来源复核\n- 视频下载/抓取类条目需补充版权与合规边界",
+    "kind": "skill",
+    "goal": "把 issue #27 里的可读取线索转为可验证、可维护、可导出的 Agent Skills 条目。",
+    "inputs": [
+      {
+        "name": "issue_url",
+        "required": true,
+        "description": "GitHub issue 链接（默认：myObsidian#27）"
+      },
+      {
+        "name": "target_platform",
+        "description": "目标平台（OpenClaw / ClawHub / Obsidian / 自定义）"
+      },
+      {
+        "name": "raw_links",
+        "description": "待提取链接列表（xhslink / 微信 / GitHub / 站内报告）"
+      },
+      {
+        "name": "output_format",
+        "description": "输出格式（JSON / YAML / markdown index）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "Collect",
+        "description": "拉取 issue 正文和评论，提取并去重所有链接。"
+      },
+      {
+        "title": "Verify",
+        "description": "区分“可直接读取”与“仅短链摘要”，并打可信度标签。"
+      },
+      {
+        "title": "Structure",
+        "description": "按固定字段整理技能条目：name / problem / input / output / deps / install / source。"
+      },
+      {
+        "title": "Score & Export",
+        "description": "完成评分与风险标注，导出平台可消费格式。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Source Coverage\n- 可读取来源：...\n- 待核验来源：...\n\n## Skill Items (Structured)\n- id:\n  name:\n  category:\n  one_liner:\n  inputs:\n  outputs:\n  deps:\n  install_steps:\n  source_url:\n  confidence:\n\n## Priority Queue\n- P0（立即可落地）\n- P1（需补充来源）\n- P2（仅线索保留）\n\n## Risk Notes\n- 合规/版权/安全边界",
+    "checklist": [
+      "是否区分了可验证来源与待核验来源？",
+      "每个条目是否包含 source_url 和 confidence？",
+      "是否给出输入/输出/依赖/安装方式？",
+      "是否标注了版权与平台条款风险？",
+      "是否形成可执行的优先级队列？"
+    ],
+    "category": "research",
+    "tags": [
+      "Agent Skills",
+      "OpenClaw",
+      "ClawHub",
+      "Remotion",
+      "Issue #27",
+      "线索提取"
+    ],
+    "source": [
+      "https://github.com/EOMZON/myObsidian/issues/27",
+      "https://github.com/EOMZON/myObsidian/issues/27#issuecomment-3920689194",
+      "https://diary.zondev.top/reports/report-20260218-205620.zon.json",
+      "https://diary.zondev.top/reports/report-20260216-225506.zon.json",
+      "https://diary.zondev.top/reports/report-20260211-192207.zon.json"
+    ],
+    "examples": [
+      {
+        "input": "把 issue #27 的链接整理成 OpenClaw 可导入技能清单，先给 P0 5 条",
+        "output": "返回带 confidence 的结构化条目 + P0/P1/P2 队列 + 风险说明"
+      }
+    ],
+    "tips": [
+      "先做结构化索引，再做深度提取，避免一次性过度加工。",
+      "短链类内容默认 low/medium confidence，直到拿到可核验原文。",
+      "先落地 5 个 P0 条目，再迭代扩充。"
+    ],
+    "metadata": {
+      "owner": "prompt-hub",
+      "reviewedAt": "2026-02-18T13:30:00.000Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "listed": true,
+      "featured": true,
+      "order": 95,
+      "skillified": true,
+      "skillDomain": "research",
+      "skillSource": "curated"
+    }
+  }
+]

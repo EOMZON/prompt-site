@@ -1,0 +1,226 @@
+[
+  {
+    "id": "p2-automation-workflow-guide",
+    "title": "自动化工作流编排助手",
+    "description": "将重复性流程固化为可执行的自动化任务清单/脚本，产出步骤化方案与校验点。",
+    "content": "# 🔧 自动化工作流编排助手\n\n> 输入你的目标、现状与约束，生成端到端的自动化编排方案（含可执行脚本/伪代码、失败重试与验收标准）。\n\n## 你需要提供\n- 业务目标：一句话说明产出（例如：\"每日 8:00 生成并发送周/日报\"）\n- 现有资源：仓库/API/数据库/CI/CD/队列等\n- 约束条件：平台/权限/频率/成本/时延\n- 成功标准：SLO 与可观测性指标（延迟、吞吐、失败率）\n\n## 输出格式\n```markdown\n1) 工作流蓝图\n   - 触发器（定时/事件/手动）\n   - 阶段与编排（并行/串行/等待/重试/回滚）\n   - 数据流与边界（输入/中间产物/输出）\n\n2) 可执行方案\n   - Shell/Node/Python 脚本片段（带注释）\n   - GitHub Actions / Cron / PM2 / Airflow 样例\n   - 幂等与重试策略（退避/断路器/去重）\n\n3) 验收与监控\n   - 成功/失败判定\n   - 指标埋点与日志字段\n   - 告警阈值与自愈建议\n```\n\n## 示例调用\n```text\n目标：每日 08:00 聚合 DB + API 指标，生成 Markdown 报告并邮件发送\n资源：Postgres、内部 REST API、GitHub Actions、SendGrid\n约束：总时延 < 2 分钟，失败自动重试 3 次\n```\n\n## 生成要求\n- 优先消除特殊分支：失败统一走重试+告警\n- 明确数据契约，避免隐式耦合\n- 小函数、单一职责；超过 20 行拆分\n- 提供最简可跑版本，再给扩展项\n",
+    "kind": "skill",
+    "goal": "将重复性流程固化为可执行的自动化任务清单/脚本，产出步骤化方案与校验点。 自动化工作流编排助手",
+    "inputs": [
+      {
+        "name": "goal",
+        "required": true,
+        "description": "要自动化的目标/任务"
+      },
+      {
+        "name": "current_workflow",
+        "description": "当前流程（手工步骤、输入输出、频率）"
+      },
+      {
+        "name": "environment",
+        "description": "运行环境（OS/语言/权限/CI/CD）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（安全、稳定性、可观测性、回滚）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "梳理现状流程",
+        "description": "把手工流程画成输入→处理→输出，标出频率与痛点。"
+      },
+      {
+        "title": "确定自动化策略",
+        "description": "选择最小可行自动化点，定义接口、权限与失败策略。"
+      },
+      {
+        "title": "实现方案",
+        "description": "给出脚本/配置/命令与目录结构建议，说明可观测性与告警。"
+      },
+      {
+        "title": "验证与回滚",
+        "description": "提供验证清单与回滚路径，确保上线可控。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Current Workflow\n- 现状步骤：…\n\n## Automation Plan\n- 自动化点：…\n- 失败策略/回滚：…\n\n## Implementation\n- 脚本/配置/命令：…\n\n## Validation\n- 验证清单：…",
+    "checklist": [
+      "是否准确描述现状流程与痛点？",
+      "自动化点是否最小可行且可回滚？",
+      "是否考虑权限/安全/稳定性？",
+      "是否提供验证与监控建议？"
+    ],
+    "category": "p2-professional-tools",
+    "tags": [
+      "自动化",
+      "工作流",
+      "编排",
+      "CI/CD",
+      "可观测性"
+    ],
+    "examples": [
+      {
+        "input": "用 GitHub Actions 定时跑 ETL 并推送报表",
+        "output": "给出 actions 配置、脚本与告警规则"
+      }
+    ],
+    "tips": [
+      "先跑通最小闭环，再做并行与缓存"
+    ],
+    "metadata": {
+      "skillified": true,
+      "skillDomain": "automation",
+      "skillSource": "auto"
+    }
+  },
+  {
+    "id": "p2-codex-practical-examples",
+    "title": "指标分析与可观测性报告生成器",
+    "description": "输入指标/日志样本，自动生成洞察、图表建议、SLO/阈值与改进清单。",
+    "content": "# 📊 指标分析与可观测性报告生成器\n\n> 面向工程/产品的数据读写与决策辅助：从原始指标/日志中抽取洞察，形成结构化报告。\n\n## 你需要提供\n- 指标/日志样本（JSON/CSV/文本）\n- 业务背景与核心目标（如留存、转化、延迟）\n- 时间范围与粒度（5m/1h/1d）\n- 已知异常/变更（发布/流量/依赖）\n\n## 输出格式\n```markdown\n1) 关键结论（用数据说话）\n   - 主要波动与显著性（含基线）\n   - 影响范围与可能根因（按概率排序）\n\n2) 图表建议\n   - 适用图型与维度拆分\n   - 可视化编码建议（轴/标注/配色）\n\n3) SLO/阈值建议\n   - 目标值、告警条件与抖动抑制\n   - 误报/漏报权衡说明\n\n4) 改进路线\n   - 立刻可做（1-2 天）\n   - 短期（1-2 周）\n   - 中期（1-2 月）\n```\n\n## 生成要求\n- 展示推断链路，区分事实/猜测/建议\n- 输出可以直接贴到周报/看板\n- 给出 SQL/PromQL/LogQL 查询草稿\n",
+    "kind": "skill",
+    "goal": "输入指标/日志样本，自动生成洞察、图表建议、SLO/阈值与改进清单。 指标分析与可观测性报告生成器",
+    "inputs": [
+      {
+        "name": "context",
+        "required": true,
+        "description": "业务/产品背景与现状"
+      },
+      {
+        "name": "goal",
+        "description": "目标与成功指标（metrics）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（资源、时间、合规、技术边界等）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望输出（PRD/方案/roadmap/评审材料）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "定义问题",
+        "description": "明确用户/场景/痛点与成功指标，列出非目标（non-goals）。"
+      },
+      {
+        "title": "生成方案",
+        "description": "给出可选方案与权衡，覆盖成本、风险与依赖。"
+      },
+      {
+        "title": "落地计划",
+        "description": "输出里程碑、验收标准与埋点/监控建议。"
+      },
+      {
+        "title": "评审与迭代",
+        "description": "提出需要对齐的问题清单与下一步行动。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Problem\n- 问题陈述：…\n- 目标/指标：…\n- Non-goals：…\n\n## Options\n- 方案 A：…（权衡/风险/依赖）\n- 方案 B：…\n\n## Plan\n- 里程碑：…\n- 验收标准：…\n\n## Questions\n- 需要对齐的问题：…",
+    "checklist": [
+      "问题定义是否清楚，是否有 non-goals？",
+      "指标/验收标准是否明确？",
+      "方案是否给出权衡与风险？",
+      "是否有里程碑与下一步？"
+    ],
+    "category": "p2-professional-tools",
+    "tags": [
+      "数据分析",
+      "可观测性",
+      "SLO",
+      "仪表盘",
+      "日志"
+    ],
+    "examples": [
+      {
+        "input": "这里是一段 Nginx 错误日志样本…",
+        "output": "输出错误分布、峰值时段、阈值与面向对象的排障清单"
+      }
+    ],
+    "tips": [
+      "用基线对比而非绝对值判断异常"
+    ],
+    "metadata": {
+      "skillified": true,
+      "skillDomain": "product",
+      "skillSource": "auto"
+    }
+  },
+  {
+    "id": "p2-advanced-codex-techniques",
+    "title": "安全审计与合规检查助手",
+    "description": "按域生成安全检查清单、修复建议与验证步骤，覆盖权限、依赖、传输、日志等。",
+    "content": "# 🛡️ 安全审计与合规检查助手\n\n> 以清单驱动的方式系统化排查安全风险，并生成整改计划与复核步骤。\n\n## 审计维度\n- 身份与权限（最小权限、密钥轮换、MFA）\n- 依赖与供应链（SBOM、漏洞库、锁定版本）\n- 数据与传输（加密、脱敏、备份、保留期）\n- 接口与输入（鉴权、速率限制、注入/反序列化）\n- 日志与审计（可追溯性、篡改防护、留存策略）\n\n## 输出格式\n```markdown\n1) 风险清单（高/中/低）\n   - 风险点 | 影响面 | 证据 | 优先级\n\n2) 修复建议\n   - 具体改动、参考配置（含代码片段）\n\n3) 验证与复核\n   - 渗透/单测/集成测试建议\n   - 验收标准与回归策略\n```\n\n## 生成要求\n- 拒绝大段空话，提供可执行的配置/命令\n- 优先通用机制（最小特例化）\n- 每条建议 ≤ 20 行，超出则拆分\n",
+    "kind": "skill",
+    "goal": "按域生成安全检查清单、修复建议与验证步骤，覆盖权限、依赖、传输、日志等。 安全审计与合规检查助手",
+    "inputs": [
+      {
+        "name": "code",
+        "required": true,
+        "description": "待处理/审查/改写的代码（尽量包含上下文）"
+      },
+      {
+        "name": "language",
+        "description": "语言/框架/运行环境"
+      },
+      {
+        "name": "context",
+        "description": "业务背景与约束（性能/安全/兼容性/团队约定等）"
+      },
+      {
+        "name": "focus",
+        "description": "本次关注点（可多选）",
+        "example": "correctness, security, performance, readability"
+      }
+    ],
+    "steps": [
+      {
+        "title": "澄清目标与边界",
+        "description": "复述目标与运行环境，提出最少关键问题，明确输入/输出与副作用边界。"
+      },
+      {
+        "title": "扫描正确性与风险",
+        "description": "检查边界条件、异常路径、并发时序与安全风险，指出可复现的触发路径。"
+      },
+      {
+        "title": "给出可落地改进",
+        "description": "按优先级给出建议；必要时提供伪代码或 diff 级改动，并说明验证方法。"
+      },
+      {
+        "title": "用输出契约收口",
+        "description": "以结构化格式输出结论、问题清单、建议清单与验证清单。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## TL;DR（1-3 行）\n- 结论与最高优先级问题\n\n## Issues（按 P0/P1/P2 分组）\n- [P0] 问题：…\n  - 影响：…\n  - 证据/触发路径：…\n  - 建议：…\n\n## Suggested Changes（可选）\n- 可直接应用的修改建议（伪代码或 diff 片段）\n\n## Verification Checklist\n- [ ] 单元测试/用例\n- [ ] 边界条件\n- [ ] 性能/安全验证\n\n## Questions（若缺上下文）\n- 仅列出最少、最关键的问题",
+    "checklist": [
+      "是否明确了输入/输出与副作用边界？",
+      "是否指出了可复现的 bug/风险触发路径？",
+      "是否覆盖了安全与依赖风险？",
+      "是否给出按优先级排序的可执行建议？",
+      "是否给出验证清单（测试/指标/回归点）？"
+    ],
+    "category": "p2-professional-tools",
+    "tags": [
+      "安全",
+      "合规",
+      "审计",
+      "零信任",
+      "SBOM"
+    ],
+    "examples": [
+      {
+        "input": "Node.js 服务，暴露 REST API + Postgres，AWS 部署",
+        "output": "输出 12 条高优先级风险与对应修复片段"
+      }
+    ],
+    "tips": [
+      "先资产清单，后风险推断；证据优先"
+    ],
+    "metadata": {
+      "skillified": true,
+      "skillDomain": "coding",
+      "skillSource": "auto"
+    }
+  }
+]

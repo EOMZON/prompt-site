@@ -1,0 +1,159 @@
+[
+  {
+    "id": "ux-map-generator",
+    "title": "用户体验地图生成器",
+    "description": "从专业设计师角度梳理用户痛点并创建用户体验地图",
+    "content": "作为专业的用户体验设计师，请帮我梳理用户痛点并形成用户体验地图。\n\n请从以下角度进行分析：\n1. 用户目标和需求\n2. 行为流程和触点\n3. 痛点和情绪曲线\n4. 机会点和改进建议\n\n请提供详细的分析和可视化的体验地图。",
+    "kind": "skill",
+    "goal": "从专业设计师角度梳理用户痛点并创建用户体验地图 用户体验地图生成器",
+    "inputs": [
+      {
+        "name": "context",
+        "required": true,
+        "description": "业务/产品背景与现状"
+      },
+      {
+        "name": "goal",
+        "description": "目标与成功指标（metrics）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（资源、时间、合规、技术边界等）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望输出（PRD/方案/roadmap/评审材料）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "定义问题",
+        "description": "明确用户/场景/痛点与成功指标，列出非目标（non-goals）。"
+      },
+      {
+        "title": "生成方案",
+        "description": "给出可选方案与权衡，覆盖成本、风险与依赖。"
+      },
+      {
+        "title": "落地计划",
+        "description": "输出里程碑、验收标准与埋点/监控建议。"
+      },
+      {
+        "title": "评审与迭代",
+        "description": "提出需要对齐的问题清单与下一步行动。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Problem\n- 问题陈述：…\n- 目标/指标：…\n- Non-goals：…\n\n## Options\n- 方案 A：…（权衡/风险/依赖）\n- 方案 B：…\n\n## Plan\n- 里程碑：…\n- 验收标准：…\n\n## Questions\n- 需要对齐的问题：…",
+    "checklist": [
+      "问题定义是否清楚，是否有 non-goals？",
+      "指标/验收标准是否明确？",
+      "方案是否给出权衡与风险？",
+      "是否有里程碑与下一步？"
+    ],
+    "category": "product",
+    "tags": [
+      "用户体验",
+      "痛点分析",
+      "设计思维"
+    ],
+    "examples": [
+      {
+        "input": "示例输入",
+        "output": "示例输出"
+      }
+    ],
+    "tips": [
+      "提供具体的用户场景和产品背景",
+      "明确目标用户群体"
+    ],
+    "metadata": {
+      "owner": "prompt-hub",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "product",
+      "skillSource": "auto"
+    }
+  },
+  {
+    "id": "website-generation",
+    "title": "网站生成指南",
+    "description": "提供Next.js网站设计、开发和部署的完整指南",
+    "content": "# 网站生成指南\n\n## 信息结构设计\n从二十年资深产品设计师和专业交互设计师角度，对比市面上流量较好的相关产品进行分析，给出页面信息和操作流程。\n\n## 技术实现要求\n- Next.js开发框架\n- Vercel部署平台\n- Vercel统计数据集成\n- SEO优化支持\n- 国际化支持（默认与浏览器语言一致）\n- pnpm包管理\n- 类shacdnui简洁设计风格\n- 黑白色系配色\n- 组件化UI处理\n- Zustand全局状态管理\n- LocalStorage数据存储\n- Markdown格式内容存储",
+    "kind": "skill",
+    "goal": "提供Next.js网站设计、开发和部署的完整指南 网站生成指南",
+    "inputs": [
+      {
+        "name": "context",
+        "required": true,
+        "description": "业务/产品背景与现状"
+      },
+      {
+        "name": "goal",
+        "description": "目标与成功指标（metrics）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（资源、时间、合规、技术边界等）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望输出（PRD/方案/roadmap/评审材料）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "定义问题",
+        "description": "明确用户/场景/痛点与成功指标，列出非目标（non-goals）。"
+      },
+      {
+        "title": "生成方案",
+        "description": "给出可选方案与权衡，覆盖成本、风险与依赖。"
+      },
+      {
+        "title": "落地计划",
+        "description": "输出里程碑、验收标准与埋点/监控建议。"
+      },
+      {
+        "title": "评审与迭代",
+        "description": "提出需要对齐的问题清单与下一步行动。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Problem\n- 问题陈述：…\n- 目标/指标：…\n- Non-goals：…\n\n## Options\n- 方案 A：…（权衡/风险/依赖）\n- 方案 B：…\n\n## Plan\n- 里程碑：…\n- 验收标准：…\n\n## Questions\n- 需要对齐的问题：…",
+    "checklist": [
+      "问题定义是否清楚，是否有 non-goals？",
+      "指标/验收标准是否明确？",
+      "方案是否给出权衡与风险？",
+      "是否有里程碑与下一步？"
+    ],
+    "category": "product",
+    "tags": [
+      "网站设计",
+      "Next.js框架 (Next.js)",
+      "Vercel部署 (Vercel)",
+      "交互设计"
+    ],
+    "examples": [
+      {
+        "input": "示例输入",
+        "output": "示例输出"
+      }
+    ],
+    "tips": [
+      "提供具体的网站需求和目标",
+      "明确技术栈偏好"
+    ],
+    "metadata": {
+      "owner": "prompt-hub",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "product",
+      "skillSource": "auto"
+    }
+  }
+]

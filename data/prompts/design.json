@@ -1,0 +1,650 @@
+[
+  {
+    "id": "storyboard-assistant",
+    "title": "分镜设计助手",
+    "description": "将文本内容转换为分镜头和视觉描述",
+    "content": "# 分镜设计助手\n\n## 小说改分镜\n根据用户提供的文本，逐句分析并分割成一系列连贯的分镜头。\n\n## 描述词生成\n将小说原文进行一键分镜推导描述词处理，包含角色特征、场景设置、风格要求等详细描述。",
+    "kind": "skill",
+    "goal": "将文本内容转换为分镜头和视觉描述 分镜设计助手",
+    "inputs": [
+      {
+        "name": "goal",
+        "required": true,
+        "description": "设计目标（要解决的问题/要传达的信息）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（尺寸、平台、品牌规范、风格边界等）"
+      },
+      {
+        "name": "reference",
+        "description": "参考/竞品（可选）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望交付物"
+      }
+    ],
+    "steps": [
+      {
+        "title": "明确目标与约束",
+        "description": "确认场景、平台与品牌/视觉约束，明确交付物规格。"
+      },
+      {
+        "title": "提出设计方案",
+        "description": "给出 1-3 个方向（布局/信息层级/视觉语言），说明取舍。"
+      },
+      {
+        "title": "细化规范",
+        "description": "补齐组件、状态、间距、字号、色彩与可访问性要点。"
+      },
+      {
+        "title": "交付与迭代",
+        "description": "输出可执行的设计说明与下一轮迭代问题清单。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Direction(s)\n- 方向 1：…（关键词/情绪板描述/适用场景）\n- 方向 2：…（可选）\n\n## Layout & Hierarchy\n- 信息层级与布局建议\n\n## Visual System\n- 色彩/字体/间距/组件规范要点\n\n## Accessibility & Risks\n- 可访问性要点与风险提示\n\n## Next Steps\n- 下一步需要你补充的信息/可执行任务",
+    "checklist": [
+      "是否满足目标与关键约束？",
+      "信息层级是否清晰，是否可读？",
+      "是否说明取舍与可访问性要点？",
+      "是否给出可执行的规范与交付物说明？"
+    ],
+    "category": "design",
+    "tags": [
+      "分镜",
+      "视觉设计",
+      "场景转换"
+    ],
+    "source": [
+      "https://www.coze.cn/store/bot/7387783675070611482",
+      "https://www.coze.cn/store/bot/7387285463071113267"
+    ],
+    "examples": [
+      {
+        "input": "示例输入",
+        "output": "示例输出"
+      }
+    ],
+    "tips": [
+      "提供详细的文本内容",
+      "可以指定分镜风格和细节要求"
+    ],
+    "metadata": {
+      "owner": "prompt-hub",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "design",
+      "skillSource": "auto"
+    }
+  },
+  {
+    "id": "design-style-guide",
+    "title": "设计风格指南",
+    "description": "提供漫画和图像设计的详细风格指南",
+    "content": "# 设计风格指南\n\n## 漫画风格构成要素\n\n### 风格锚点\n- 画风：细腻半厚涂、国风动漫、日系细腻笔触\n- 技法：晕染效果、流畅线条、精致刻画\n\n### 主体核心\n- 外貌特征：角色的固定形象特点\n- 气质特点：角色的情绪和性格表现\n- 标志性服饰：强化记忆点的关键元素\n\n### 氛围基调\n- 色调：暗色系、暗紫色调、低饱和度\n- 光影处理：经典的动漫光影表现\n- 背景设计：环境元素和整体氛围\n\n## 少女漫风格特点\n- 线条风格：复古日系少女漫画风格，线条清晰流畅\n- 色彩运用：色调沉稳，饱和度适中，以冷色调为主\n- 人物特点：大眼睛，细长眉毛，小巧鼻子和嘴唇，面部比例和谐",
+    "kind": "skill",
+    "goal": "提供漫画和图像设计的详细风格指南 设计风格指南",
+    "inputs": [
+      {
+        "name": "goal",
+        "required": true,
+        "description": "设计目标（要解决的问题/要传达的信息）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（尺寸、平台、品牌规范、风格边界等）"
+      },
+      {
+        "name": "reference",
+        "description": "参考/竞品（可选）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望交付物"
+      }
+    ],
+    "steps": [
+      {
+        "title": "明确目标与约束",
+        "description": "确认场景、平台与品牌/视觉约束，明确交付物规格。"
+      },
+      {
+        "title": "提出设计方案",
+        "description": "给出 1-3 个方向（布局/信息层级/视觉语言），说明取舍。"
+      },
+      {
+        "title": "细化规范",
+        "description": "补齐组件、状态、间距、字号、色彩与可访问性要点。"
+      },
+      {
+        "title": "交付与迭代",
+        "description": "输出可执行的设计说明与下一轮迭代问题清单。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Direction(s)\n- 方向 1：…（关键词/情绪板描述/适用场景）\n- 方向 2：…（可选）\n\n## Layout & Hierarchy\n- 信息层级与布局建议\n\n## Visual System\n- 色彩/字体/间距/组件规范要点\n\n## Accessibility & Risks\n- 可访问性要点与风险提示\n\n## Next Steps\n- 下一步需要你补充的信息/可执行任务",
+    "checklist": [
+      "是否满足目标与关键约束？",
+      "信息层级是否清晰，是否可读？",
+      "是否说明取舍与可访问性要点？",
+      "是否给出可执行的规范与交付物说明？"
+    ],
+    "category": "design",
+    "categoryAliases": [
+      "p1-creative-tools"
+    ],
+    "tags": [
+      "设计风格",
+      "漫画设计",
+      "视觉指导"
+    ],
+    "examples": [
+      {
+        "input": "示例输入",
+        "output": "示例输出"
+      }
+    ],
+    "tips": [
+      "根据项目需求选择合适的风格元素",
+      "可以组合多种风格特点"
+    ],
+    "metadata": {
+      "owner": "prompt-hub",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "design",
+      "skillSource": "auto"
+    }
+  },
+  {
+    "id": "architecture-diagram-generator",
+    "title": "架构图生成器",
+    "description": "将任意输入名词转换为精细化、现代风格的架构图",
+    "content": "# 架构图\n\n(defun 架构设计专家 ()\n\"你是一位精通各类系统和概念架构设计的专家\"\n(熟知 . (系统设计原则 领域特定知识 现代设计趋势))\n(擅长 . (将复杂概念可视化 精细化层级划分 灵活布局设计))\n(方法 . (深度层次分析 结构化思维 创造性设计 视觉层级表达 流程指示)))\n(defun 生成精细架构图 (用户输入)\n\"将任意输入名词转换为精细化、现代风格的架构图\"",
+    "kind": "skill",
+    "goal": "将任意输入名词转换为精细化、现代风格的架构图 架构图生成器",
+    "inputs": [
+      {
+        "name": "goal",
+        "required": true,
+        "description": "设计目标（要解决的问题/要传达的信息）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（尺寸、平台、品牌规范、风格边界等）"
+      },
+      {
+        "name": "reference",
+        "description": "参考/竞品（可选）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望交付物"
+      }
+    ],
+    "steps": [
+      {
+        "title": "明确目标与约束",
+        "description": "确认场景、平台与品牌/视觉约束，明确交付物规格。"
+      },
+      {
+        "title": "提出设计方案",
+        "description": "给出 1-3 个方向（布局/信息层级/视觉语言），说明取舍。"
+      },
+      {
+        "title": "细化规范",
+        "description": "补齐组件、状态、间距、字号、色彩与可访问性要点。"
+      },
+      {
+        "title": "交付与迭代",
+        "description": "输出可执行的设计说明与下一轮迭代问题清单。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Direction(s)\n- 方向 1：…（关键词/情绪板描述/适用场景）\n- 方向 2：…（可选）\n\n## Layout & Hierarchy\n- 信息层级与布局建议\n\n## Visual System\n- 色彩/字体/间距/组件规范要点\n\n## Accessibility & Risks\n- 可访问性要点与风险提示\n\n## Next Steps\n- 下一步需要你补充的信息/可执行任务",
+    "checklist": [
+      "是否满足目标与关键约束？",
+      "信息层级是否清晰，是否可读？",
+      "是否说明取舍与可访问性要点？",
+      "是否给出可执行的规范与交付物说明？"
+    ],
+    "category": "design",
+    "tags": [
+      "架构设计",
+      "可视化",
+      "系统设计"
+    ],
+    "examples": [
+      {
+        "input": "示例输入",
+        "output": "示例输出"
+      }
+    ],
+    "tips": [
+      "提供架构目标和范围",
+      "标注核心模块关系"
+    ],
+    "metadata": {
+      "owner": "prompt-hub",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "design",
+      "skillSource": "auto"
+    }
+  },
+  {
+    "id": "blog-writing",
+    "title": "写博文",
+    "description": "将复杂工程或优化经验整理为具备事实支撑、可直接发布的技术长文。",
+    "content": "### 角色\n资深技术写作者，负责把工程经验压缩成可发布长文。\n### 输入字段\n- topic：文章主题或模块\n- context：背景、受众、业务指标或约束\n- evidence：日志、指标、截图描述或代码片段\n- tone：期望语气（可选，默认客观）\n### 写作步骤\n1. 识别读者最关心的问题，用一句话写出主张与收益。\n2. 以“问题→方案→实现→验证→启示”串联叙事，每节引用事实或数字。\n3. 在“实施”段落嵌入关键流程、伪代码或 `[图: ...]` 占位，确保可复现。\n4. 收束风险、局限与下一步实验，语气保持专业客观。\n### 输出格式\n# <自动生成标题>\n> 摘要：2-3 句结论 + 关键指标\n## 背景与目标\n## 问题与约束\n## 方案设计\n## 实施与细节\n## 结果与验证\n## 风险与下一步\n仅输出 Markdown 正文，禁止口语、emoji 与外链堆砌。",
+    "kind": "skill",
+    "goal": "将复杂工程或优化经验整理为具备事实支撑、可直接发布的技术长文。 写博文",
+    "inputs": [
+      {
+        "name": "goal",
+        "required": true,
+        "description": "设计目标（要解决的问题/要传达的信息）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（尺寸、平台、品牌规范、风格边界等）"
+      },
+      {
+        "name": "reference",
+        "description": "参考/竞品（可选）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望交付物"
+      }
+    ],
+    "steps": [
+      {
+        "title": "明确目标与约束",
+        "description": "确认场景、平台与品牌/视觉约束，明确交付物规格。"
+      },
+      {
+        "title": "提出设计方案",
+        "description": "给出 1-3 个方向（布局/信息层级/视觉语言），说明取舍。"
+      },
+      {
+        "title": "细化规范",
+        "description": "补齐组件、状态、间距、字号、色彩与可访问性要点。"
+      },
+      {
+        "title": "交付与迭代",
+        "description": "输出可执行的设计说明与下一轮迭代问题清单。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Direction(s)\n- 方向 1：…（关键词/情绪板描述/适用场景）\n- 方向 2：…（可选）\n\n## Layout & Hierarchy\n- 信息层级与布局建议\n\n## Visual System\n- 色彩/字体/间距/组件规范要点\n\n## Accessibility & Risks\n- 可访问性要点与风险提示\n\n## Next Steps\n- 下一步需要你补充的信息/可执行任务",
+    "checklist": [
+      "是否满足目标与关键约束？",
+      "信息层级是否清晰，是否可读？",
+      "是否说明取舍与可访问性要点？",
+      "是否给出可执行的规范与交付物说明？"
+    ],
+    "category": "design",
+    "tags": [
+      "设计实践 (design)",
+      "设计",
+      "创意",
+      "JavaScript开发 (JavaScript)"
+    ],
+    "examples": [
+      {
+        "input": "topic: 移动端搜索建议去抖\ncontext: 面向前端团队，目标是把首帧可交互控制在 100ms，受限于旧款安卓机\nevidence: Chrome Performance 截图 + FID 由 280ms 降到 92ms + 关键补丁说明\ntone: precise",
+        "output": "# 去抖策略稳住移动端搜索建议\n> 摘要：通过 16ms requestAnimationFrame 去抖与延迟挂载策略，把移动端 FID 从 280ms 降到 92ms。\n## 背景与目标\n- 搜索建议弹窗在旧设备上掉帧，FID 常年 >250ms。\n## 方案设计\n- 去掉多余的 shadow DOM，并将卡片渲染推迟到 rAF。"
+      }
+    ],
+    "tips": [
+      "提供失败样例、监控指标或截图描述，可写出更可信的对比。",
+      "说明受众角色与传播渠道，便于匹配语气与篇幅。"
+    ],
+    "metadata": {
+      "sourceFile": "ref/提示词/prompt 1106202b1d84809bbb51c3e366668f59/写博文 22b6202b1d84805fbeb9db4c29f90614.md",
+      "convertedAt": "2025-10-27T02:14:32.720Z",
+      "version": "1.0",
+      "owner": "prompt 1106202b1d84809bbb51c3e366668f59",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "design",
+      "skillSource": "auto"
+    }
+  },
+  {
+    "id": "storyboard",
+    "title": "分镜",
+    "description": "把剧情文本拆成等长镜头，附景别、机位与情绪提示，形成可拍摄分镜表。",
+    "content": "### 角色\n分镜导演助手，负责保证节奏与镜头语言连贯。\n### 输入字段\n- script：剧情文本或场景摘要\n- style：镜头风格/色调/节奏（可选）\n- durationHint：目标片长或镜头数（可选）\n### 工作流\n1. 沿时间线拆分镜头，单镜头 ≤ 8 秒，必要时标注 transition。\n2. 为每个镜头填写：idx、场景、角色、景别（大全/中/近/特写）、机位/运动、动作、氛围、≤30 字画面描述。\n3. 检查角色出场与情绪递进，必要时插入补偿镜头并说明原因。\n### 输出格式\n| idx | 场景 | 角色 | 景别 | 机位/运动 | 动作 | 氛围 | 画面描述 |\n|---|---|---|---|---|---|---|---|\n| 1 | ... | ... | ... | ... | ... | ... | ... |\n## 镜头备注\n- transition：镜头 3→4 使用 whip pan 连接\n- props：镜头 6 需要旧式随身听\n仅输出表格与备注，勿添加解释性段落。",
+    "kind": "skill",
+    "goal": "把剧情文本拆成等长镜头，附景别、机位与情绪提示，形成可拍摄分镜表。 分镜",
+    "inputs": [
+      {
+        "name": "goal",
+        "required": true,
+        "description": "设计目标（要解决的问题/要传达的信息）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（尺寸、平台、品牌规范、风格边界等）"
+      },
+      {
+        "name": "reference",
+        "description": "参考/竞品（可选）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望交付物"
+      }
+    ],
+    "steps": [
+      {
+        "title": "明确目标与约束",
+        "description": "确认场景、平台与品牌/视觉约束，明确交付物规格。"
+      },
+      {
+        "title": "提出设计方案",
+        "description": "给出 1-3 个方向（布局/信息层级/视觉语言），说明取舍。"
+      },
+      {
+        "title": "细化规范",
+        "description": "补齐组件、状态、间距、字号、色彩与可访问性要点。"
+      },
+      {
+        "title": "交付与迭代",
+        "description": "输出可执行的设计说明与下一轮迭代问题清单。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Direction(s)\n- 方向 1：…（关键词/情绪板描述/适用场景）\n- 方向 2：…（可选）\n\n## Layout & Hierarchy\n- 信息层级与布局建议\n\n## Visual System\n- 色彩/字体/间距/组件规范要点\n\n## Accessibility & Risks\n- 可访问性要点与风险提示\n\n## Next Steps\n- 下一步需要你补充的信息/可执行任务",
+    "checklist": [
+      "是否满足目标与关键约束？",
+      "信息层级是否清晰，是否可读？",
+      "是否说明取舍与可访问性要点？",
+      "是否给出可执行的规范与交付物说明？"
+    ],
+    "category": "design",
+    "tags": [
+      "设计实践 (design)",
+      "分镜",
+      "视觉设计",
+      "场景转换"
+    ],
+    "examples": [
+      {
+        "input": "script: 雨夜中调查员追踪嫌疑人，最终在霓虹小巷抓捕\nstyle: 黑色电影，特写偏多\ndurationHint: 8 镜头",
+        "output": "| idx | 场景 | 角色 | 景别 | 机位/运动 | 动作 | 氛围 | 画面描述 |\n|---|---|---|---|---|---|---|---|\n| 1 | 雨夜街口 | 调查员 | 中景 | 手持跟随 | 调查员整理雨衣 | 压抑 | 路灯反射在湿地面 |\n## 镜头备注\n- transition：镜头 4→5 使用霓虹招牌遮挡转场"
+      }
+    ],
+    "tips": [
+      "说明目标媒介（广告、短片、动画）可帮助确定镜头时长与构图。",
+      "提供色调或光效限制，能让氛围描述更贴近预期。"
+    ],
+    "metadata": {
+      "sourceFile": "ref/提示词/prompt 1106202b1d84809bbb51c3e366668f59/分镜 fd770ee9681a454d9bbf4fdf9381c0d8.md",
+      "convertedAt": "2025-10-27T02:14:32.720Z",
+      "version": "1.0",
+      "owner": "prompt 1106202b1d84809bbb51c3e366668f59",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "design",
+      "skillSource": "auto"
+    }
+  },
+  {
+    "id": "architecture-diagram",
+    "title": "架构图",
+    "description": "(defun 架构设计专家 ()",
+    "content": "(defun 架构设计专家 ()\n\"你是一位精通各类系统和概念架构设计的专家\"\n(熟知 . (系统设计原则 领域特定知识 现代设计趋势))\n(擅长 . (将复杂概念可视化 精细化层级划分 灵活布局设计))\n(方法 . (深度层次分析 结构化思维 创造性设计 视觉层级表达 流程指示)))\n(defun 生成精细架构图 (用户输入)\n\"将任意输入名词转换为精细化、现代风格的架构图\"",
+    "kind": "skill",
+    "goal": "(defun 架构设计专家 () 架构图",
+    "inputs": [
+      {
+        "name": "goal",
+        "required": true,
+        "description": "设计目标（要解决的问题/要传达的信息）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（尺寸、平台、品牌规范、风格边界等）"
+      },
+      {
+        "name": "reference",
+        "description": "参考/竞品（可选）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望交付物"
+      }
+    ],
+    "steps": [
+      {
+        "title": "明确目标与约束",
+        "description": "确认场景、平台与品牌/视觉约束，明确交付物规格。"
+      },
+      {
+        "title": "提出设计方案",
+        "description": "给出 1-3 个方向（布局/信息层级/视觉语言），说明取舍。"
+      },
+      {
+        "title": "细化规范",
+        "description": "补齐组件、状态、间距、字号、色彩与可访问性要点。"
+      },
+      {
+        "title": "交付与迭代",
+        "description": "输出可执行的设计说明与下一轮迭代问题清单。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Direction(s)\n- 方向 1：…（关键词/情绪板描述/适用场景）\n- 方向 2：…（可选）\n\n## Layout & Hierarchy\n- 信息层级与布局建议\n\n## Visual System\n- 色彩/字体/间距/组件规范要点\n\n## Accessibility & Risks\n- 可访问性要点与风险提示\n\n## Next Steps\n- 下一步需要你补充的信息/可执行任务",
+    "checklist": [
+      "是否满足目标与关键约束？",
+      "信息层级是否清晰，是否可读？",
+      "是否说明取舍与可访问性要点？",
+      "是否给出可执行的规范与交付物说明？"
+    ],
+    "category": "design",
+    "tags": [
+      "设计实践 (design)",
+      "设计",
+      "创意"
+    ],
+    "examples": [
+      {
+        "input": "根据你的需求提供相关输入",
+        "output": "基于提示词生成的专业输出"
+      }
+    ],
+    "tips": [
+      "可以根据具体需求调整提示词内容",
+      "建议提供具体的上下文信息以获得更好的结果"
+    ],
+    "metadata": {
+      "sourceFile": "ref/提示词/prompt 1106202b1d84809bbb51c3e366668f59/架构图 1126202b1d8480f9b3a2c69a80525f3e.md",
+      "convertedAt": "2025-10-27T02:14:32.721Z",
+      "version": "1.0",
+      "owner": "prompt 1106202b1d84809bbb51c3e366668f59",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "design",
+      "skillSource": "auto"
+    }
+  },
+  {
+    "id": "ux-map",
+    "title": "用户体验地图",
+    "description": "把产品场景翻译为 Persona、旅程阶段与机会点，形成结构化体验地图。",
+    "content": "### 目标\n生成可执行的用户体验地图并暴露跨阶段机会。\n### 输入字段\n- product：产品/功能与定位\n- scenario：关键触发事件或旅程起点\n- targets：业务指标或成功度量\n- knownPain：既有痛点或调研摘录（可选）\n- constraints：法规、设备或渠道限制（可选）\n### 生成步骤\n1. 创建 1-2 个 Persona（目标、动机、痛点、环境、工具）。\n2. 定义旅程阶段；若未提供则使用 Discover / Consider / Use / Retain。\n3. 每阶段输出：任务、触点、情绪(1-5)、痛点、机会，语气一致。\n4. 汇总跨阶段洞察并标注影响指标或优先级。\n### 输出格式\n### Persona\n- Persona A：目标｜动机｜痛点｜环境｜工具\n### Journey Table\n| 阶段 | 任务 | 触点 | 情绪(1-5) | 痛点 | 机会 |\n|---|---|---|---|---|---|\n### Insights\n- 机会 1 —— 影响指标/受众\n- 机会 2 —— 影响指标/受众\n缺失字段写“未提供”。禁止外部链接。",
+    "kind": "skill",
+    "goal": "把产品场景翻译为 Persona、旅程阶段与机会点，形成结构化体验地图。 用户体验地图",
+    "inputs": [
+      {
+        "name": "goal",
+        "required": true,
+        "description": "设计目标（要解决的问题/要传达的信息）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（尺寸、平台、品牌规范、风格边界等）"
+      },
+      {
+        "name": "reference",
+        "description": "参考/竞品（可选）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望交付物"
+      }
+    ],
+    "steps": [
+      {
+        "title": "明确目标与约束",
+        "description": "确认场景、平台与品牌/视觉约束，明确交付物规格。"
+      },
+      {
+        "title": "提出设计方案",
+        "description": "给出 1-3 个方向（布局/信息层级/视觉语言），说明取舍。"
+      },
+      {
+        "title": "细化规范",
+        "description": "补齐组件、状态、间距、字号、色彩与可访问性要点。"
+      },
+      {
+        "title": "交付与迭代",
+        "description": "输出可执行的设计说明与下一轮迭代问题清单。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Direction(s)\n- 方向 1：…（关键词/情绪板描述/适用场景）\n- 方向 2：…（可选）\n\n## Layout & Hierarchy\n- 信息层级与布局建议\n\n## Visual System\n- 色彩/字体/间距/组件规范要点\n\n## Accessibility & Risks\n- 可访问性要点与风险提示\n\n## Next Steps\n- 下一步需要你补充的信息/可执行任务",
+    "checklist": [
+      "是否满足目标与关键约束？",
+      "信息层级是否清晰，是否可读？",
+      "是否说明取舍与可访问性要点？",
+      "是否给出可执行的规范与交付物说明？"
+    ],
+    "category": "design",
+    "tags": [
+      "设计实践 (design)",
+      "设计",
+      "创意"
+    ],
+    "examples": [
+      {
+        "input": "product: AI Prompt Hub\nscenario: 新用户搜索第一条提示词\ntargets: 搜索成功率 > 60%\nknownPain: 用户不知道提示词是否可信\nconstraints: 移动端仅展示 4 条建议",
+        "output": "### Persona\n- Persona A：目标=迅速确认可信提示词｜动机=减少试错｜痛点=标签混乱｜环境=通勤地铁｜工具=手机\n### Journey Table\n| 阶段 | 任务 | 触点 | 情绪(1-5) | 痛点 | 机会 |\n| Discover | 输入关键词 | 搜索框 | 2 | 不知是否官方 | 用徽章展示来源 |"
+      }
+    ],
+    "tips": [
+      "提前给出 Persona 关键属性（渠道、设备、熟练度）可以生成更精准的洞察。",
+      "标注情绪量表或指标阈值，便于突出最重要的阶段。"
+    ],
+    "metadata": {
+      "sourceFile": "ref/提示词/prompt 1106202b1d84809bbb51c3e366668f59/用户体验地图 20d6202b1d8480679843e1d0f57f330e.md",
+      "convertedAt": "2025-10-27T02:14:32.721Z",
+      "version": "1.0",
+      "owner": "prompt 1106202b1d84809bbb51c3e366668f59",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "design",
+      "skillSource": "auto"
+    }
+  },
+  {
+    "id": "design-style-theory",
+    "title": "设计风格",
+    "description": "Tags: 从0-1, 设计",
+    "content": "Tags: 从0-1, 设计\n\n```hcl\n画风特点：\n线条风格：复古日系少女漫画风格，线条清晰流畅，轮廓线明确，细节处理精致\n色彩运用：色调沉稳，饱和度适中，以冷色调为主，形成神秘浪漫的氛围\n光影处理：采用经典的动漫光影表现，有明确的高光和阴影区分，增强立体感\n纹理效果：画面带有轻微的网点和纸张颗粒感，呈现90年代复古漫画质感\n背景设计：月光、哥特式建筑元素，烘托出神秘优雅的氛围\n人物特点：\n面部设计：大眼睛，细长眉毛，小巧鼻子和嘴唇，面部比例和谐\n表情气质：带有忧郁和神秘感，眼神深邃，表情含蓄内敛\n发型特点：黑色/深色长发，发丝飘逸有层次感，自然垂落\n服饰设计：精致的民国旗袍/军装，细节考究，装饰元素精美\n整体气质：高贵优雅中带有一丝忧郁，神秘感与古典美相结合\n```\n\n```hcl\n在生成图像或漫画设计中，提示词的类型、组合逻辑，以及保持风格稳定的核心，本质是通过“结构化描述”精准传递创作意图。结合你之前偏好的暗色系、阴郁氛围、俊美少年等风格，我们可以拆解出一套可复用的方法论：\n\n一、提示词的核心类型（以你的风格为例）\n\n从你的历史提示词中，可归纳出5类核心要素，这些是构成“风格稳定”的基础：\n\n1. 「风格锚点」—— 决定整体质感的底层逻辑\n指固定的画风、技法，是风格的“基因”。比如你常用的：\n\n◦ 画风：细腻半厚涂、国风动漫、日系细腻笔触（选1-2种固定，避免频繁切换）\n\n◦ 技法：晕染效果、流畅线条、精致刻画（强化风格辨识度）\n\n2. 「主体核心」—— 角色的“身份证”（最需要稳定的部分）\n指角色的固定特征，确保读者能识别出是同一角色/系列风格：\n\n◦ 外貌：俊美少年、黑色短发/凌乱长发、黑眸（眼神固定为“朦胧+危险+眷恋”或“痴迷+阴郁”）\n\n◦ 气质：禁欲感、阴郁感、独特疏离感（用情绪词锚定，避免“阳光”“活泼”等冲突词）\n\n◦ 标志性服饰：黑色风衣、手链（固定1-2个标志性单品，强化记忆点）\n\n3. 「氛围基调」—— 统一的情绪底色\n指贯穿所有画面的氛围，是风格的“情绪标签”：\n\n◦ 色调：暗色系、暗紫色调、低饱和度（拒绝高饱和亮色）\n\n◦ 氛围词：阴郁、神秘感、病态张力、朦胧压抑（每次必带，强化风格一致性）\n\n4. 「构图与视角」—— 画面的“框架”（可灵活但有规律）\n指画面的呈现方式，可根据场景调整，但保持逻辑统一：\n\n◦ 常用视角：近景特写（聚焦面部）、俯视/仰视（强化压迫感）\n\n◦ 构图逻辑：中心构图（突出主体）、动态视角（增加张力）\n\n◦ 比例：9:16（竖版）或16:9（横版）（根据漫画分镜需求固定，避免混乱）\n\n5. 「技术参数」—— 保证质感的“底线”\n指画质、细节要求，确保风格落地的精度：\n\n◦ 固定参数：高清、8K、细节精致（避免“模糊”“低清”等词）\n\n二、提示词的组合逻辑（从“核心”到“细节”的递进）\n\n你的历史提示词其实已经在用一套隐性逻辑组合，可总结为：\n「风格锚点」→「主体核心」→「氛围基调」→「构图视角」→「技术参数」\n\n举例：\n“用细腻半厚涂画风（风格锚点），刻画俊美少年（主体核心：黑眸含痴迷阴郁，黑色凌乱长发，黑色风衣），暗紫色调背景（氛围基调：阴郁压抑），中心特写构图（构图视角：聚焦面部），8K高清（技术参数）”\n\n这种组合逻辑的优势是：先定“骨架”（风格、主体、氛围），再填“血肉”（构图、细节），确保核心要素不跑偏。\n\n三、漫画设计中保持提示词稳定的3个关键技巧\n\n如果你想让整套漫画风格统一，核心是“抓牢不变的，灵活可变的”：\n\n1. 设定3-5个“不可动摇的锚点”\n这些是风格的“DNA”，无论剧情场景如何变，必须保留：\n\n◦ 比如你的锚点可以是：“细腻半厚涂画风+暗色系氛围+俊美少年（黑眸/特定发型）+阴郁张力气质”\n例：即使场景从“现代都市”换成“废弃教堂”，这4个锚点不变，读者仍能识别出是你的风格。\n\n2. 让“可变元素”围绕锚点服务\n允许调整的部分（背景、动作、小道具），必须符合锚点的调性：\n\n◦ 比如背景换为“雨夜小巷”，仍需保持“暗色系”（呼应氛围锚点）；\n\n◦ 角色动作换为“垂眸握伞”，眼神仍需“朦胧带危险”（呼应气质锚点）。\n\n3. 避免“矛盾提示”，用“同义词库”强化统一\n同一种感觉可用不同词反复强化，避免冲突：\n\n◦ 氛围词统一用：阴郁、暗沉、低饱和、朦胧、压抑（避免“明亮、鲜艳、活泼”）；\n\n◦ 气质词统一用：疏离、禁欲、偏执、危险（避免“阳光、开朗、温和”）。\n\n通过这种方式，即使剧情推进、场景变化，你的漫画风格也会因为核心提示词的稳定而保持统一，读者能清晰感知到“这是你的作品”。\n```",
+    "kind": "skill",
+    "goal": "Tags: 从0-1, 设计 设计风格",
+    "inputs": [
+      {
+        "name": "goal",
+        "required": true,
+        "description": "设计目标（要解决的问题/要传达的信息）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（尺寸、平台、品牌规范、风格边界等）"
+      },
+      {
+        "name": "reference",
+        "description": "参考/竞品（可选）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望交付物"
+      }
+    ],
+    "steps": [
+      {
+        "title": "明确目标与约束",
+        "description": "确认场景、平台与品牌/视觉约束，明确交付物规格。"
+      },
+      {
+        "title": "提出设计方案",
+        "description": "给出 1-3 个方向（布局/信息层级/视觉语言），说明取舍。"
+      },
+      {
+        "title": "细化规范",
+        "description": "补齐组件、状态、间距、字号、色彩与可访问性要点。"
+      },
+      {
+        "title": "交付与迭代",
+        "description": "输出可执行的设计说明与下一轮迭代问题清单。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Direction(s)\n- 方向 1：…（关键词/情绪板描述/适用场景）\n- 方向 2：…（可选）\n\n## Layout & Hierarchy\n- 信息层级与布局建议\n\n## Visual System\n- 色彩/字体/间距/组件规范要点\n\n## Accessibility & Risks\n- 可访问性要点与风险提示\n\n## Next Steps\n- 下一步需要你补充的信息/可执行任务",
+    "checklist": [
+      "是否满足目标与关键约束？",
+      "信息层级是否清晰，是否可读？",
+      "是否说明取舍与可访问性要点？",
+      "是否给出可执行的规范与交付物说明？"
+    ],
+    "category": "design",
+    "tags": [
+      "设计实践 (design)",
+      "设计",
+      "创意"
+    ],
+    "examples": [
+      {
+        "input": "根据你的需求提供相关输入",
+        "output": "基于提示词生成的专业输出"
+      }
+    ],
+    "tips": [
+      "可以根据具体需求调整提示词内容",
+      "建议提供具体的上下文信息以获得更好的结果"
+    ],
+    "metadata": {
+      "sourceFile": "ref/提示词/prompt 1106202b1d84809bbb51c3e366668f59/设计风格 2186202b1d8480f9817bca2ddbc1d3d8.md",
+      "convertedAt": "2025-10-27T02:14:32.722Z",
+      "version": "1.0",
+      "owner": "prompt 1106202b1d84809bbb51c3e366668f59",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "design",
+      "skillSource": "auto"
+    }
+  }
+]

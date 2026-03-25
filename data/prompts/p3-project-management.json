@@ -1,0 +1,507 @@
+[
+  {
+    "id": "claude-codex-8hour-workflow",
+    "title": "Claude Code 指导 Codex 连续 8 小时工作流",
+    "description": "使用 Claude Code 作为监工，通过子代理机制启动、监控并循环执行 Codex CLI 任务，实现长时间连续运行",
+    "content": "### 实现 Claude Code 指导 Codex 连续 8 小时运行的原理与步骤\n\n你提到的这个分享很可能源自 X（Twitter）用户@dotey（宝玉）的帖子，他于 2025 年 9 月 28 日公开了一个创新方案：使用 Claude Code 作为\"监工\"（supervisor），通过子代理（sub-agent）机制来启动、监控并循环执行 Codex CLI 的任务，从而实现 Codex 的连续运行，而不会导致上下文窗口（context window）爆掉。\n\n#### 核心原理\n**分离角色**：Claude Code 负责规划和监督，Codex CLI 负责实际执行。Claude Code 通过子代理隔离上下文，确保主会话保持简洁；Codex 每次重启为新 session，避免 token 积累。\n\n#### 实现步骤\n\n**1. 环境准备**\n- **安装工具**：\n  - Claude Code：Anthropic 官方 CLI 工具\n  - Codex CLI：OpenAI 的编码 CLI 工具\n  - 终端环境：支持 macOS/Linux（推荐 WSL for Windows）\n- **项目设置**：\n  - 创建 `TODO.md`：列出任务清单\n  - 创建 `AGENTS.md`：Codex 配置文件\n\n**2. 启动主 Claude Code 会话**\n- 运行 `claude` 进入交互模式\n- 输入初始提示，让 Claude 规划整体任务\n\n**3. 循环执行机制**\n- 使用 Claude Code 的**子代理（sub-agent）**功能\n- 核心命令：\n  ```\n  帮我在当前目录下，新开一个 agent，使用 export TERM=xterm && codex exec \"continue to next task\" --full-auto --reasoning-effort high 命令开启一个 codex 进程。\n  注意观察任务执行情况，如果当前任务完成(任务运行时间较长，可以多等一会)，就结束进程（kill PID），然后重新开个 agent 运行相同指令让它继续下一个任务。\n  ```\n- **监控逻辑**：\n  - Claude 子代理运行 `tail -f codex.log` 监控输出\n  - 任务完成检测：检查日志中是否有\"Task completed\"或 TODO.md 更新\n  - 超时处理：每小时注入\"Reflect and continue if needed\"提示\n\n#### 优化技巧\n- **token 优化**：限制日志输出，使用 `--compact` 模式\n- **并行处理**：Claude 可同时启动 2-3 个子代理\n- **成本控制**：Claude Max 支持 8+ 小时；Codex Pro 每周限额高\n\n#### 预期输出\n```\nSub-agent 1: Codex启动，执行任务1 (认证重构)，耗时: 32min。完成，更新TODO.md。\nSub-agent 2: Codex启动，执行任务2 (测试)，耗时: 45min。无错误，继续。\n... (循环8小时，覆盖10+任务)\n```\n\n这种方法本质上是\"代理链\"（agent chaining），让 Claude 的规划能力补足 Codex 的执行力。",
+    "kind": "skill",
+    "goal": "使用 Claude Code 作为监工，通过子代理机制启动、监控并循环执行 Codex CLI 任务，实现长时间连续运行 Claude Code 指导 Codex 连续 8 小时工作流",
+    "inputs": [
+      {
+        "name": "context",
+        "required": true,
+        "description": "业务/产品背景与现状"
+      },
+      {
+        "name": "goal",
+        "description": "目标与成功指标（metrics）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（资源、时间、合规、技术边界等）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望输出（PRD/方案/roadmap/评审材料）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "定义问题",
+        "description": "明确用户/场景/痛点与成功指标，列出非目标（non-goals）。"
+      },
+      {
+        "title": "生成方案",
+        "description": "给出可选方案与权衡，覆盖成本、风险与依赖。"
+      },
+      {
+        "title": "落地计划",
+        "description": "输出里程碑、验收标准与埋点/监控建议。"
+      },
+      {
+        "title": "评审与迭代",
+        "description": "提出需要对齐的问题清单与下一步行动。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Problem\n- 问题陈述：…\n- 目标/指标：…\n- Non-goals：…\n\n## Options\n- 方案 A：…（权衡/风险/依赖）\n- 方案 B：…\n\n## Plan\n- 里程碑：…\n- 验收标准：…\n\n## Questions\n- 需要对齐的问题：…",
+    "checklist": [
+      "问题定义是否清楚，是否有 non-goals？",
+      "指标/验收标准是否明确？",
+      "方案是否给出权衡与风险？",
+      "是否有里程碑与下一步？"
+    ],
+    "category": "p3-project-management",
+    "tags": [
+      "项目管理",
+      "工作流",
+      "自动化",
+      "监工机制"
+    ],
+    "examples": [
+      {
+        "input": "示例输入",
+        "output": "示例输出"
+      }
+    ],
+    "tips": [
+      "提供更多的上下文信息可以获得更好的结果",
+      "可以根据具体需求调整提示词内容",
+      "多次尝试可以获得更好的效果"
+    ],
+    "metadata": {
+      "owner": "prompt-hub",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "product",
+      "skillSource": "auto"
+    },
+    "roles": [
+      "pm",
+      "dev"
+    ]
+  },
+  {
+    "id": "project-management-user-persona",
+    "title": "项目管理用户画像分析",
+    "description": "帮助 PM 以用户叙事方式产出 Persona、旅程故事、差距分析与下一步验证计划。",
+    "content": "### 目标\n把产品背景转换为 Persona + 旅程故事 + 差距分析 + 下一步验证。\n### 输入字段\n- product：产品/功能与定位\n- audience：目标用户或角色假设\n- scenario：关键任务或触发事件\n- metrics：业务指标/约束\n- pains：已知痛点或证据（可选）\n### 输出步骤\n1. 生成 1-2 个 Persona（目标、动机、痛点、环境、渠道、设备）。\n2. 以第一人称写 5-8 句旅程故事，覆盖 触发→探索→使用→完成→反馈。\n3. 构建差距矩阵：需求/界面/流程 三栏，列出现状问题、影响、建议。\n4. 给出 ≤3 条下一步验证或共创建议，标注 owner 与时间窗口。\n### 输出格式\n### Persona\n- Persona A：目标｜动机｜痛点｜环境｜渠道｜设备\n### Journey Story\n1. ...\n### Gap Analysis\n| 维度 | 现状问题 | 影响 | 建议 |\n|---|---|---|---|\n### Next Step\n- 建议 1 —— owner/时间\n仅输出 Markdown，禁止 backlog 或任务编号。",
+    "kind": "skill",
+    "goal": "帮助 PM 以用户叙事方式产出 Persona、旅程故事、差距分析与下一步验证计划。 项目管理用户画像分析",
+    "inputs": [
+      {
+        "name": "context",
+        "required": true,
+        "description": "业务/产品背景与现状"
+      },
+      {
+        "name": "goal",
+        "description": "目标与成功指标（metrics）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（资源、时间、合规、技术边界等）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望输出（PRD/方案/roadmap/评审材料）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "定义问题",
+        "description": "明确用户/场景/痛点与成功指标，列出非目标（non-goals）。"
+      },
+      {
+        "title": "生成方案",
+        "description": "给出可选方案与权衡，覆盖成本、风险与依赖。"
+      },
+      {
+        "title": "落地计划",
+        "description": "输出里程碑、验收标准与埋点/监控建议。"
+      },
+      {
+        "title": "评审与迭代",
+        "description": "提出需要对齐的问题清单与下一步行动。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Problem\n- 问题陈述：…\n- 目标/指标：…\n- Non-goals：…\n\n## Options\n- 方案 A：…（权衡/风险/依赖）\n- 方案 B：…\n\n## Plan\n- 里程碑：…\n- 验收标准：…\n\n## Questions\n- 需要对齐的问题：…",
+    "checklist": [
+      "问题定义是否清楚，是否有 non-goals？",
+      "指标/验收标准是否明确？",
+      "方案是否给出权衡与风险？",
+      "是否有里程碑与下一步？"
+    ],
+    "category": "p3-project-management",
+    "tags": [
+      "用户研究",
+      "项目管理",
+      "需求分析",
+      "用户体验"
+    ],
+    "examples": [
+      {
+        "input": "product: Prompt Hub 搜索\naudience: 新手提示词创作者\nscenario: 第一次搜索并收藏提示词\nmetrics: 收藏转化率 40%\npains: 不知道提示词可信度",
+        "output": "### Persona\n- Persona A：目标=快速验证提示词｜动机=缩短探索时间｜痛点=缺乏权威信号｜环境=远程办公｜渠道=Chrome 扩展｜设备=笔记本\n### Journey Story\n1. 我输入“代码审查”查看建议……\n### Gap Analysis\n| 维度 | 现状问题 | 影响 | 建议 |\n| 需求 | 缺少官方标记 | 不敢点击 | 在卡片上加权威徽章 |"
+      }
+    ],
+    "tips": [
+      "提供业务 KPI、上线节奏与合规限制，分析会更聚焦。",
+      "指明最关键的触点或渠道，有助于旅程故事贴合实际。"
+    ],
+    "relatedIds": [
+      "pm-user-persona",
+      "pm-backlog-generator"
+    ],
+    "metadata": {
+      "owner": "prompt-hub",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "product",
+      "skillSource": "auto"
+    },
+    "roles": [
+      "pm",
+      "designer"
+    ]
+  },
+  {
+    "id": "pm-user-persona",
+    "title": "用户画像与旅程故事生成器",
+    "description": "专注于生成 Persona 与第一人称旅程叙述的单一任务提示词",
+    "content": "只做一件事：基于产品背景生成 1-2 个 Persona，并各自写一段第一人称旅程故事（5-8 句），随后补充简短差距观察（≤6 条要点）。\n\n输出规范：\n1) Persona（目标/动机/痛点/环境/工具）\n2) 旅程故事（第一人称）\n3) 差距观察（需求/界面/流程）\n\n不要生成任务清单或 Backlog。",
+    "kind": "skill",
+    "goal": "专注于生成 Persona 与第一人称旅程叙述的单一任务提示词 用户画像与旅程故事生成器",
+    "inputs": [
+      {
+        "name": "context",
+        "required": true,
+        "description": "业务/产品背景与现状"
+      },
+      {
+        "name": "goal",
+        "description": "目标与成功指标（metrics）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（资源、时间、合规、技术边界等）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望输出（PRD/方案/roadmap/评审材料）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "定义问题",
+        "description": "明确用户/场景/痛点与成功指标，列出非目标（non-goals）。"
+      },
+      {
+        "title": "生成方案",
+        "description": "给出可选方案与权衡，覆盖成本、风险与依赖。"
+      },
+      {
+        "title": "落地计划",
+        "description": "输出里程碑、验收标准与埋点/监控建议。"
+      },
+      {
+        "title": "评审与迭代",
+        "description": "提出需要对齐的问题清单与下一步行动。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Problem\n- 问题陈述：…\n- 目标/指标：…\n- Non-goals：…\n\n## Options\n- 方案 A：…（权衡/风险/依赖）\n- 方案 B：…\n\n## Plan\n- 里程碑：…\n- 验收标准：…\n\n## Questions\n- 需要对齐的问题：…",
+    "checklist": [
+      "问题定义是否清楚，是否有 non-goals？",
+      "指标/验收标准是否明确？",
+      "方案是否给出权衡与风险？",
+      "是否有里程碑与下一步？"
+    ],
+    "category": "p3-project-management",
+    "tags": [
+      "用户研究",
+      "Persona",
+      "用户旅程",
+      "体验叙述"
+    ],
+    "examples": [
+      {
+        "input": "示例输入",
+        "output": "示例输出"
+      }
+    ],
+    "tips": [
+      "提供目标用户画像与关键场景",
+      "限定旅程的入口与完成条件"
+    ],
+    "relatedIds": [
+      "project-management-user-persona",
+      "pm-backlog-generator"
+    ],
+    "metadata": {
+      "skillified": true,
+      "skillDomain": "product",
+      "skillSource": "auto"
+    },
+    "roles": [
+      "pm",
+      "designer"
+    ]
+  },
+  {
+    "id": "pm-backlog-generator",
+    "title": "项目 Backlog 生成器",
+    "description": "根据 Persona/旅程与差距观察，生成结构化 Backlog（User Story、验收标准、优先级）",
+    "content": "输入 Persona/旅程摘要与差距观察，输出结构化 Backlog：\n- User Story（作为…我想…以便…）\n- 验收标准（Gherkin 或勾选条目）\n- 优先级（P0/P1/P2）与负责人占位\n- 预估（故事点或小时）\n\n只输出 Backlog，不做 Persona 或叙事。",
+    "kind": "skill",
+    "goal": "根据 Persona/旅程与差距观察，生成结构化 Backlog（User Story、验收标准、优先级） 项目 Backlog 生成器",
+    "inputs": [
+      {
+        "name": "context",
+        "required": true,
+        "description": "业务/产品背景与现状"
+      },
+      {
+        "name": "goal",
+        "description": "目标与成功指标（metrics）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（资源、时间、合规、技术边界等）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望输出（PRD/方案/roadmap/评审材料）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "定义问题",
+        "description": "明确用户/场景/痛点与成功指标，列出非目标（non-goals）。"
+      },
+      {
+        "title": "生成方案",
+        "description": "给出可选方案与权衡，覆盖成本、风险与依赖。"
+      },
+      {
+        "title": "落地计划",
+        "description": "输出里程碑、验收标准与埋点/监控建议。"
+      },
+      {
+        "title": "评审与迭代",
+        "description": "提出需要对齐的问题清单与下一步行动。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Problem\n- 问题陈述：…\n- 目标/指标：…\n- Non-goals：…\n\n## Options\n- 方案 A：…（权衡/风险/依赖）\n- 方案 B：…\n\n## Plan\n- 里程碑：…\n- 验收标准：…\n\n## Questions\n- 需要对齐的问题：…",
+    "checklist": [
+      "问题定义是否清楚，是否有 non-goals？",
+      "指标/验收标准是否明确？",
+      "方案是否给出权衡与风险？",
+      "是否有里程碑与下一步？"
+    ],
+    "category": "p3-project-management",
+    "tags": [
+      "项目管理",
+      "Backlog",
+      "需求管理",
+      "验收标准"
+    ],
+    "examples": [
+      {
+        "input": "示例输入",
+        "output": "示例输出"
+      }
+    ],
+    "tips": [
+      "提供 3-5 条差距观察作为输入",
+      "为每条 Story 指定清晰的可验证验收条件"
+    ],
+    "relatedIds": [
+      "project-management-user-persona",
+      "pm-user-persona"
+    ],
+    "metadata": {
+      "skillified": true,
+      "skillDomain": "product",
+      "skillSource": "auto"
+    },
+    "roles": [
+      "pm",
+      "dev"
+    ]
+  },
+  {
+    "id": "comprehensive-project-assessment",
+    "title": "全面工程项目评估方法论",
+    "description": "系统化的5阶段问题解决方法论，从现状分析到实施路线图的完整评估流程",
+    "content": "## 全面工程项目评估方法论\n\n作为一名资深前端工程师，我需要你对我当前的项目进行全面的工程评估和改进计划。请遵循以下系统化方法：\n\n### 第一阶段：现状分析\n- 使用 `codebase-retrieval` 工具分析现有代码库结构和组织方式\n- 评估 React/Next.js 项目架构和组件模式，特别关注：\n  - 组件设计模式（状态驱动 vs DOM 操作）\n  - 文件组织结构和命名约定\n  - 依赖管理和包管理策略\n- 评估现有测试策略（单元测试、Playwright 端到端测试）\n\n### 第二阶段：最佳实践研究\n- 研究 2024-2025 年前端工程最佳实践，具体包括：\n  - React/Next.js 项目结构和架构模式\n  - AI 辅助开发工作流程和代码质量标准\n  - 现代 React 应用测试策略（单元、集成、端到端）\n  - 代码可维护性和技术债务管理\n  - 文档和方法论维护实践\n  - 性能优化和调试方法论\n\n### 第三阶段：差距分析和优先级任务创建\n- 对比当前的实践与行业最佳实践\n- 识别具体的差距和改进机会\n- 创建优先级任务列表，采用 P0-P3 优先级：\n  - P0：影响开发效率或代码质量的关键问题\n  - P1：可维护性的高优先级改进\n  - P2：优化和增强机会\n  - P3：需要设计评估的改进项目\n\n### 第四阶段：实施路线图\n- 为每个识别的问题提供具体、可操作的建议\n- 包含系统化、架构优先方法一致的实施策略\n- 考虑现有技术栈（React、Next.js、Playwright、Mermaid）和开发模式\n- 提供具体的验证计划和成功标准\n\n### 预期交付物\n1. 当前状态评估报告\n2. 最佳实践研究总结\n3. 带有明确验收标准的优先级改进任务列表\n4. 具体下一步的实施路线图\n5. 更新的开发方法论建议\n\n### 执行要求\n- 专注于增强长期可维护性的实用、可实施解决方案\n- 遵循系统化 5 阶段问题解决方法论\n- 优先考虑架构级别的根本原因分析\n- 包含真实浏览器验证和证据驱动的分析\n- 确保所有建议与 React/Next.js 虚拟 DOM 兼容",
+    "kind": "skill",
+    "goal": "系统化的5阶段问题解决方法论，从现状分析到实施路线图的完整评估流程 全面工程项目评估方法论",
+    "inputs": [
+      {
+        "name": "context",
+        "required": true,
+        "description": "业务/产品背景与现状"
+      },
+      {
+        "name": "goal",
+        "description": "目标与成功指标（metrics）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（资源、时间、合规、技术边界等）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望输出（PRD/方案/roadmap/评审材料）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "定义问题",
+        "description": "明确用户/场景/痛点与成功指标，列出非目标（non-goals）。"
+      },
+      {
+        "title": "生成方案",
+        "description": "给出可选方案与权衡，覆盖成本、风险与依赖。"
+      },
+      {
+        "title": "落地计划",
+        "description": "输出里程碑、验收标准与埋点/监控建议。"
+      },
+      {
+        "title": "评审与迭代",
+        "description": "提出需要对齐的问题清单与下一步行动。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Problem\n- 问题陈述：…\n- 目标/指标：…\n- Non-goals：…\n\n## Options\n- 方案 A：…（权衡/风险/依赖）\n- 方案 B：…\n\n## Plan\n- 里程碑：…\n- 验收标准：…\n\n## Questions\n- 需要对齐的问题：…",
+    "checklist": [
+      "问题定义是否清楚，是否有 non-goals？",
+      "指标/验收标准是否明确？",
+      "方案是否给出权衡与风险？",
+      "是否有里程碑与下一步？"
+    ],
+    "category": "p3-project-management",
+    "tags": [
+      "工程评估",
+      "方法论",
+      "系统分析",
+      "最佳实践"
+    ],
+    "examples": [
+      {
+        "input": "示例输入",
+        "output": "示例输出"
+      }
+    ],
+    "tips": [
+      "提供更多的上下文信息可以获得更好的结果",
+      "可以根据具体需求调整提示词内容",
+      "多次尝试可以获得更好的效果"
+    ],
+    "metadata": {
+      "owner": "prompt-hub",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "product",
+      "skillSource": "auto"
+    },
+    "roles": [
+      "pm",
+      "dev",
+      "architect"
+    ]
+  },
+  {
+    "id": "agile-development-workflow",
+    "title": "敏捷开发工作流管理",
+    "description": "基于测试MVP优先级的敏捷开发流程，从P0到P3的优先级驱动开发模式",
+    "content": "## 敏捷开发工作流管理\n\n### 核心开发原则\n\n#### 开发优先级矩阵\n```\n优先级 P0 (立即开发) 🔴：前端可视验证功能\n优先级 P1 (当日完成) 🟡：核心用户体验功能  \n优先级 P2 (本周完成) 🟢：增强功能和优化\n优先级 P3 (后续迭代) 🔵：高级功能和集成\n```\n\n### P0 优先级 - 前端验证必须功能 🔴\n\n**核心原则：看到即相信 - 浏览器实际可视验证**\n\n#### 必须验证检查清单\n\n每完成一个功能，必须进行以下验证：\n\n##### 1. 浏览器实际验证 ⭐ **最重要**\n```bash\n✅ 在Chrome/Firefox/Safari中实际打开页面\n✅ 测试所有交互功能（点击、hover、输入）\n✅ 验证数据正确显示和更新\n✅ 检查响应式布局\n✅ 验证错误处理机制\n```\n\n##### 2. 功能完整性验证\n```bash\n✅ 功能按预期工作\n✅ 边界情况处理正确\n✅ 错误提示用户友好\n✅ 性能表现良好（加载速度、响应速度）\n```\n\n##### 3. 代码质量验证\n```bash\n✅ 代码遵循项目规范\n✅ 适当的错误处理\n✅ 必要的注释和文档\n✅ 没有console.log等调试代码\n```\n\n### 开发执行模板\n\n### 每次开发任务的执行流程：\n\n```markdown\n## 当前开发任务：[具体功能名称]\n\n### 📍 优先级：P[0/1/2/3] - [紧急程度说明]\n\n### 🎯 功能需求：\n- [ ] 具体需求1\n- [ ] 具体需求2  \n- [ ] 具体需求3\n\n### 🔍 验证计划：\n1. **浏览器验证**：\n   - [ ] 在[浏览器]中测试[具体功能]\n   - [ ] 验证[具体交互行为]\n   \n2. **功能验证**：\n   - [ ] 正常流程测试\n   - [ ] 异常情况测试\n   \n3. **性能验证**：\n   - [ ] 加载时间 < 2秒\n   - [ ] 交互响应 < 500ms\n\n### ✅ 完成标准：\n- [ ] 浏览器实际验证通过\n- [ ] 功能完整性验证通过  \n- [ ] 代码质量验证通过\n\n### 问题记录：需要讲遇到的问题记录到对应的doc问题文件夹中\n### 文档记录：doc需要一个readme，并记录相关需要阅读的文档链接\n```\n\n### 开发提效要求\n\n#### 对开发者的具体要求：\n\n1. **优先级驱动**：始终按P0→P1→P2→P3顺序开发\n2. **验证优先**：每个功能必须先通过浏览器验证再继续下一个\n3. **MVP思维**：P0、P1功能保持简洁有效，避免过度设计\n4. **渐进增强**：先实现基础功能，再逐步添加高级特性\n5. **用户体验**：所有交互必须直观、快速、可靠\n\n#### 代码风格参考：\n\n```typescript\n// 🎯 功能导向的代码组织\nexport const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {\n  // P0: 基础显示逻辑\n  const displayInfo = useMemo(() => ({\n    title: project.title,\n    status: project.status,\n    progress: project.progress\n  }), [project]);\n\n  // P1: 交互逻辑\n  const handleCardClick = useCallback(() => {\n    router.push(`/projects/${project.id}`);\n  }, [project.id]);\n\n  // P0: 基础渲染（优先验证）\n  return (\n    <div className=\"project-card\" onClick={handleCardClick}>\n      <h3>{displayInfo.title}</h3>\n      <span className={`status-${displayInfo.status}`}>\n        {displayInfo.status}\n      </span>\n      {/* P1: 交互按钮 */}\n      <div className=\"card-actions\">\n        <button onClick={onEdit}>编辑</button>\n        <button onClick={onDelete}>删除</button>\n      </div>\n    </div>\n  );\n};\n```\n\n### 使用说明\n- 每次开发时，请明确当前任务的优先级\n- 完成P0功能后再进行P1，依此类推\n- 每个功能完成后必须进行浏览器实际验证\n- 遇到问题时，优先保证高优先级功能的稳定性\n\n### 迭代原则\n快速交付可用功能 → 用户验证反馈 → 持续改进优化",
+    "kind": "skill",
+    "goal": "基于测试MVP优先级的敏捷开发流程，从P0到P3的优先级驱动开发模式 敏捷开发工作流管理",
+    "inputs": [
+      {
+        "name": "context",
+        "required": true,
+        "description": "业务/产品背景与现状"
+      },
+      {
+        "name": "goal",
+        "description": "目标与成功指标（metrics）"
+      },
+      {
+        "name": "constraints",
+        "description": "约束（资源、时间、合规、技术边界等）"
+      },
+      {
+        "name": "deliverable",
+        "description": "期望输出（PRD/方案/roadmap/评审材料）"
+      }
+    ],
+    "steps": [
+      {
+        "title": "定义问题",
+        "description": "明确用户/场景/痛点与成功指标，列出非目标（non-goals）。"
+      },
+      {
+        "title": "生成方案",
+        "description": "给出可选方案与权衡，覆盖成本、风险与依赖。"
+      },
+      {
+        "title": "落地计划",
+        "description": "输出里程碑、验收标准与埋点/监控建议。"
+      },
+      {
+        "title": "评审与迭代",
+        "description": "提出需要对齐的问题清单与下一步行动。"
+      }
+    ],
+    "outputContract": "请按以下结构输出：\n\n## Problem\n- 问题陈述：…\n- 目标/指标：…\n- Non-goals：…\n\n## Options\n- 方案 A：…（权衡/风险/依赖）\n- 方案 B：…\n\n## Plan\n- 里程碑：…\n- 验收标准：…\n\n## Questions\n- 需要对齐的问题：…",
+    "checklist": [
+      "问题定义是否清楚，是否有 non-goals？",
+      "指标/验收标准是否明确？",
+      "方案是否给出权衡与风险？",
+      "是否有里程碑与下一步？"
+    ],
+    "category": "p3-project-management",
+    "tags": [
+      "敏捷开发",
+      "优先级管理",
+      "最简可行产品 (MVP)",
+      "测试驱动"
+    ],
+    "examples": [
+      {
+        "input": "示例输入",
+        "output": "示例输出"
+      }
+    ],
+    "tips": [
+      "提供更多的上下文信息可以获得更好的结果",
+      "可以根据具体需求调整提示词内容",
+      "多次尝试可以获得更好的效果"
+    ],
+    "metadata": {
+      "owner": "prompt-hub",
+      "reviewedAt": "2025-10-27T06:13:28.271Z",
+      "schemaVersion": "2025.10",
+      "tagsNormalized": true,
+      "hasExamples": true,
+      "skillified": true,
+      "skillDomain": "product",
+      "skillSource": "auto"
+    },
+    "roles": [
+      "pm",
+      "dev",
+      "qa"
+    ]
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "categories": {
+    "coding": "14",
+    "design": "8",
+    "p0-core-dev": "4",
+    "p1-creative-tools": "3",
+    "p2-professional-tools": "3",
+    "p3-project-management": "4",
+    "product": "2",
+    "research": "3",
+    "writing": "3"
+  },
+  "promptCounts": {
+    "coding": 14,
+    "design": 8,
+    "p0-core-dev": 4,
+    "p1-creative-tools": 3,
+    "p2-professional-tools": 3,
+    "p3-project-management": 4,
+    "product": 2,
+    "research": 3,
+    "writing": 3
+  },
+  "totalPrompts": 44,
+  "lastUpdated": "2025-10-27T07:31:28.425Z",
+  "description": "提示词库索引文件"
+}
