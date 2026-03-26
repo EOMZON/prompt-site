@@ -16,12 +16,12 @@ async function handleCopy(event) {
 
   try {
     await navigator.clipboard.writeText(text);
-    button.textContent = "Copied";
+    button.textContent = "已复制";
     window.setTimeout(() => {
       button.textContent = original;
     }, 1400);
   } catch (error) {
-    button.textContent = "Copy Failed";
+    button.textContent = "复制失败";
     window.setTimeout(() => {
       button.textContent = original;
     }, 1600);
@@ -78,7 +78,7 @@ function initLibrary(library) {
   function updateSummary(visibleCount) {
     if (!summaryNode) return;
     const parts = [];
-    if (state.category && state.category !== "all") {
+    if (categoryButtons.length > 0 && state.category && state.category !== "all") {
       const button = categoryButtons.find((item) => normalize(item.getAttribute("data-filter-category")) === state.category);
       parts.push(button ? button.querySelector("span")?.textContent || state.category : state.category);
     }
@@ -89,7 +89,7 @@ function initLibrary(library) {
     if (state.query) {
       parts.push(`搜索: ${state.query}`);
     }
-    summaryNode.textContent = parts.length > 0 ? parts.join(" / ") : "全部 prompt";
+    summaryNode.textContent = parts.length > 0 ? parts.join(" / ") : "全部结果";
     if (countNode) countNode.textContent = String(visibleCount);
   }
 
@@ -163,9 +163,41 @@ function initLibrary(library) {
   applyFilters();
 }
 
+function initSceneTabs(section) {
+  const buttons = Array.from(section.querySelectorAll("[data-scene-button]"));
+  const panels = Array.from(section.querySelectorAll("[data-scene-panel]"));
+  if (buttons.length === 0 || panels.length === 0) return;
+
+  const initial = normalize(buttons[0].getAttribute("data-scene-button"));
+
+  function activate(sceneId) {
+    buttons.forEach((button) => {
+      const active = normalize(button.getAttribute("data-scene-button")) === sceneId;
+      button.classList.toggle("is-active", active);
+    });
+
+    panels.forEach((panel) => {
+      const active = normalize(panel.getAttribute("data-scene-panel")) === sceneId;
+      panel.hidden = !active;
+    });
+  }
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      activate(normalize(button.getAttribute("data-scene-button")));
+    });
+  });
+
+  activate(initial);
+}
+
 document.addEventListener("click", async (event) => {
   const copied = await handleCopy(event);
   if (copied) return;
+});
+
+document.querySelectorAll("[data-scene-tabs]").forEach((section) => {
+  initSceneTabs(section);
 });
 
 document.querySelectorAll("[data-library]").forEach((library) => {

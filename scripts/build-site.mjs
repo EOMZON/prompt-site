@@ -45,6 +45,39 @@ const roleCategoryMap = {
   analysis: ["research", "p2-professional-tools"]
 };
 
+const sceneGroupMeta = [
+  {
+    id: "develop",
+    label: "开发",
+    summary: "写代码、做架构、处理调试与工程质量时，从这里开始。",
+    categories: ["coding", "p0-core-dev"]
+  },
+  {
+    id: "design",
+    label: "设计",
+    summary: "做视觉、分镜、创意生成或创作辅助时，从这里开始。",
+    categories: ["design", "p1-creative-tools"]
+  },
+  {
+    id: "product",
+    label: "产品",
+    summary: "做需求判断、项目推进、用户画像和协作规划时，从这里开始。",
+    categories: ["product", "p3-project-management"]
+  },
+  {
+    id: "research",
+    label: "研究",
+    summary: "做调研、比较、分析和专业工具型任务时，从这里开始。",
+    categories: ["research", "p2-professional-tools"]
+  },
+  {
+    id: "writing",
+    label: "写作",
+    summary: "写文章、改稿、压缩表达或组织结构时，从这里开始。",
+    categories: ["writing"]
+  }
+];
+
 function normalizeUrl(value) {
   return String(value || "").trim().replace(/\/+$/, "");
 }
@@ -92,8 +125,8 @@ function repoBlobPath(filePath) {
   return `${publicRepoUrl}/blob/${publicRepoBranch}/${filePath.replace(/^\/+/, "")}`;
 }
 
-function promptCopyButton(prompt, label = "Copy Prompt") {
-  return `<button class="copy-button" data-copy-text="${escapeHtml(encodeURIComponent(prompt.content))}">${escapeHtml(label)}</button>`;
+function promptCopyButton(prompt, label = "复制 Prompt", className = "copy-button") {
+  return `<button class="${escapeHtml(className)}" data-copy-text="${escapeHtml(encodeURIComponent(prompt.content))}">${escapeHtml(label)}</button>`;
 }
 
 function promptDetailPath(prompt) {
@@ -113,34 +146,38 @@ function buildPromptSearchText(prompt) {
     ? prompt.inputs.flatMap((item) => [item?.name, item?.description, item?.example])
     : [];
   const steps = Array.isArray(prompt.steps)
-    ? prompt.steps.flatMap((item) => [item?.title, item?.description])
+    ? prompt.steps.slice(0, 2).flatMap((item) => [item?.title])
     : [];
 
   return compactText(
     [
       prompt.title,
       prompt.description,
-      prompt.content,
+      truncateText(prompt.content, 240),
       prompt.goal,
-      prompt.outputContract,
       categoryMeta[prompt.category]?.label,
       prompt.category,
       ...(prompt.tags || []),
       ...(prompt.tips || []),
-      ...(prompt.checklist || []),
       ...inputs,
       ...steps
     ].join(" ")
   );
 }
 
+function truncateText(value, maxLength = 96) {
+  const text = compactText(value);
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 1).trim()}...`;
+}
+
 function layout({ title, description, body, canonicalPath }) {
   const canonical = `${siteOrigin}/${canonicalPath.replace(/^\/+/, "")}`;
   const navLinks = [
-    { label: "Home", href: "/index.html" },
-    { label: "Categories", href: "/index.html#categories" },
-    { label: "Explorer", href: "/index.html#library" },
-    { label: "GitHub", href: publicRepoUrl }
+    { label: "首页", href: "/index.html" },
+    { label: "按场景开始", href: "/index.html#start" },
+    { label: "全部库", href: "/index.html#library" },
+    { label: "源文件", href: publicRepoUrl }
   ];
 
   return `<!doctype html>
@@ -177,16 +214,17 @@ function layout({ title, description, body, canonicalPath }) {
 
 function renderPromptCard(prompt) {
   const roleBadges = (prompt.roleIds || []).slice(0, 3).map((roleId) => `<span class="tag tag-role">${escapeHtml(roleMeta[roleId]?.label || roleId)}</span>`).join("");
+  const cardPreview = truncateText(prompt.content, 84);
   return `<article class="prompt-card" data-prompt-card data-prompt-category="${escapeHtml(prompt.category)}" data-prompt-roles="${escapeHtml((prompt.roleIds || []).join(","))}" data-prompt-search="${escapeHtml(prompt.searchText || "")}">
   <p class="card-kicker">${escapeHtml(categoryMeta[prompt.category]?.label || prompt.category)}</p>
   <h3 class="prompt-card-title"><a ${anchorAttrs(`/${promptDetailPath(prompt)}`)}>${escapeHtml(prompt.title)}</a></h3>
-  <div class="prompt-card-meta">${escapeHtml(prompt.category)} · ${escapeHtml(prompt.id)}</div>
+  <div class="prompt-card-meta">可直接复制 · 先用再细化</div>
   <p class="prompt-card-copy">${escapeHtml(prompt.description)}</p>
+  <p class="card-preview">${escapeHtml(cardPreview)}</p>
   <div class="tag-row">${roleBadges}${(prompt.tags || []).slice(0, 4).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div>
   <div class="action-row">
-    ${promptCopyButton(prompt, "Quick Copy")}
-    <a ${anchorAttrs(`/${promptDetailPath(prompt)}`, "ghost-button")}>Open Prompt</a>
-    <a ${anchorAttrs(prompt.githubUrl, "ghost-button")}>GitHub</a>
+    <a ${anchorAttrs(`/${promptDetailPath(prompt)}`, "button")}>打开并使用</a>
+    ${promptCopyButton(prompt, "快速复制", "text-button")}
   </div>
 </article>`;
 }
@@ -194,28 +232,100 @@ function renderPromptCard(prompt) {
 function renderCategoryCard(category, prompts) {
   const meta = categoryMeta[category] || { label: category, summary: "Prompt collection." };
   return `<article class="category-card">
-  <p class="card-kicker">Category</p>
+  <p class="card-kicker">场景</p>
   <h3 class="category-card-title"><a ${anchorAttrs(`/${categoryPath(category)}`)}>${escapeHtml(meta.label)}</a></h3>
-  <div class="category-card-meta">${prompts.length} prompts · ${escapeHtml(category)}</div>
+  <div class="category-card-meta">${prompts.length} 条 prompt</div>
   <p class="category-card-copy">${escapeHtml(meta.summary)}</p>
   <div class="action-row">
-    <a ${anchorAttrs(`/${categoryPath(category)}`, "ghost-button")}>Browse Category</a>
-    <a ${anchorAttrs(repoBlobPath(`data/prompts/${category}.json`), "ghost-button")}>View JSON</a>
+    <a ${anchorAttrs(`/${categoryPath(category)}`, "ghost-button")}>进入这个场景</a>
   </div>
 </article>`;
+}
+
+function renderSceneTabsSection({ prompts }) {
+  const initialScene = sceneGroupMeta[0]?.id;
+  const buttons = sceneGroupMeta
+    .map((scene) => {
+      const count = prompts.filter((prompt) => scene.categories.includes(prompt.category)).length;
+      return `<button class="scene-tab" type="button" data-scene-button="${escapeHtml(scene.id)}">${escapeHtml(scene.label)}<span>${count}</span></button>`;
+    })
+    .join("");
+
+  const panels = sceneGroupMeta
+    .map((scene) => {
+      const scenePrompts = prompts.filter((prompt) => scene.categories.includes(prompt.category));
+      const featuredPrompts = scenePrompts.slice(0, 4);
+      const isActive = scene.id === initialScene;
+      return `<section class="scene-panel" data-scene-panel="${escapeHtml(scene.id)}"${isActive ? "" : " hidden"}>
+        <div class="scene-panel-head">
+          <div>
+            <p class="card-kicker">场景</p>
+            <h3 class="scene-panel-title">${escapeHtml(scene.label)}</h3>
+          </div>
+          <div class="detail-meta-line">${scenePrompts.length} 条 prompt</div>
+        </div>
+        <p class="scene-panel-copy">${escapeHtml(scene.summary)}</p>
+        <div class="scene-subnav">
+          ${scene.categories
+            .map(
+              (category) =>
+                `<a ${anchorAttrs(`/${categoryPath(category)}`, "scene-subnav-link")}>${escapeHtml(categoryMeta[category]?.label || category)}</a>`
+            )
+            .join("")}
+        </div>
+        <div class="scene-panel-actions">
+          <a ${anchorAttrs(`/${categoryPath(scene.categories[0])}`, "button")}>进入这个场景</a>
+          <a ${anchorAttrs("/index.html#library", "text-button")}>直接去总库筛选</a>
+        </div>
+        <div class="prompt-grid prompt-grid-scene">
+          ${featuredPrompts.map((prompt) => renderPromptCard(prompt)).join("\n")}
+        </div>
+      </section>`;
+    })
+    .join("");
+
+  return `<section class="section scene-tabs-section" id="start" data-scene-tabs>
+    <div class="section-header">
+      <div>
+        <p class="section-kicker">开始</p>
+        <h2 class="section-title">先选场景，再打开 prompt</h2>
+      </div>
+      <div class="section-summary">这是首页唯一的主路径。先选你正在做的事，再进入那组最相关的 prompt。</div>
+    </div>
+    <div class="scene-tab-row" role="tablist" aria-label="场景切换">
+      ${buttons}
+    </div>
+    ${panels}
+  </section>`;
+}
+
+function renderSceneLinkTabs(categories, activeCategory) {
+  return `<nav class="scene-link-row" aria-label="场景切换">
+    ${categories
+      .map((category) => {
+        const isActive = category === activeCategory;
+        return `<a ${anchorAttrs(`/${categoryPath(category)}`, `scene-link${isActive ? " is-active" : ""}`)}>${escapeHtml(
+          categoryMeta[category]?.label || category
+        )}</a>`;
+      })
+      .join("")}
+  </nav>`;
 }
 
 function renderLibrarySection({
   prompts,
   categories,
+  categoryIds = categories,
   title,
   summary,
   kicker = "Explorer",
-  initialCategory = "all"
+  initialCategory = "all",
+  showCategoryFilters = true,
+  searchPlaceholder = "搜索标题、描述或你要完成的任务"
 }) {
   const categoryButtons = [
     `<button class="filter-button" type="button" data-filter-category="all"><span>全部 Prompt</span><span class="filter-count">${prompts.length}</span></button>`,
-    ...categories.map((category) => {
+    ...categoryIds.map((category) => {
       const count = prompts.filter((prompt) => prompt.category === category).length;
       return `<button class="filter-button" type="button" data-filter-category="${escapeHtml(category)}"><span>${escapeHtml(categoryMeta[category]?.label || category)}</span><span class="filter-count">${count}</span></button>`;
     })
@@ -240,36 +350,40 @@ function renderLibrarySection({
       <aside class="library-sidebar" data-library-sidebar>
         <div class="filter-block">
           <div class="filter-head">
-            <p class="side-title">Search</p>
-            <button class="text-button" type="button" data-library-clear>Clear</button>
+            <p class="side-title">关键词</p>
+            <button class="text-button" type="button" data-library-clear>清空</button>
           </div>
-          <input class="search-input" type="search" placeholder="搜索标题、描述、正文、标签" data-library-search />
-          <p class="filter-copy">保留 prompt-hub 的基础使用链路：先筛选，再打开，最后复制。</p>
+          <input class="search-input" type="search" placeholder="${escapeHtml(searchPlaceholder)}" data-library-search />
+          <p class="filter-copy">知道自己要什么时，再来这里细筛；不知道时，先从上面的场景入口开始。</p>
         </div>
-        <div class="filter-block">
-          <p class="side-title">Scenes</p>
+        ${
+          showCategoryFilters
+            ? `<div class="filter-block">
+          <p class="side-title">场景</p>
           <div class="filter-stack">${categoryButtons}</div>
-        </div>
+        </div>`
+            : ""
+        }
         <div class="filter-block">
-          <p class="side-title">Roles</p>
+          <p class="side-title">角色</p>
           <div class="filter-stack">${roleButtons}</div>
         </div>
       </aside>
       <div class="library-main">
         <div class="library-toolbar">
           <div>
-            <div class="library-status"><span class="mono" data-library-count>${prompts.length}</span> results</div>
-            <div class="library-summary" data-library-summary>全部 prompt</div>
+            <div class="library-status"><span class="mono" data-library-count>${prompts.length}</span> 条结果</div>
+            <div class="library-summary" data-library-summary>全部结果</div>
           </div>
-          <button class="ghost-button library-toggle" type="button" data-library-toggle>Filters</button>
+          <button class="ghost-button library-toggle" type="button" data-library-toggle>筛选</button>
         </div>
         <div class="prompt-grid prompt-grid-library">
           ${prompts.map((prompt) => renderPromptCard(prompt)).join("\n")}
         </div>
         <div class="empty-card" data-library-empty hidden>
-          <p class="card-kicker">Empty</p>
+          <p class="card-kicker">结果为空</p>
           <h3 class="prompt-card-title">没有找到匹配的 prompt</h3>
-          <p class="empty-copy">可以试试更短的关键词，或者先清空角色与场景筛选。</p>
+          <p class="empty-copy">试试更短的关键词，或者先清空角色筛选。</p>
         </div>
       </div>
     </div>
@@ -285,64 +399,39 @@ function renderLinkedValue(value) {
 }
 
 function buildHome({ index, prompts, categories }) {
-  const featured = prompts.slice(0, 12);
   const syncLabel = index.lastUpdated ? String(index.lastUpdated).slice(0, 10) : "Live";
   const body = `<main class="page">
   <section class="hero">
     <div>
-      <p class="eyebrow">Prompt Library</p>
-      <h1 class="hero-title">Reusable prompts, organized by scene.</h1>
-      <p class="hero-copy">这个站点只做 prompt 本身：按场景浏览，打开详情，直接复制，需要时再回到 GitHub 查看源文件和版本历史。</p>
+      <p class="eyebrow">Prompt Hub</p>
+      <h1 class="hero-title">先选场景，再打开能直接用的 prompt。</h1>
+      <p class="hero-copy">这里不是先让你研究站点结构，而是先让你找到正在做的那类事。先从场景 tabs 进入，再决定要不要继续细筛。</p>
       <div class="hero-actions">
-        <a ${anchorAttrs("/index.html#categories", "button")}>Browse Categories</a>
-        <a ${anchorAttrs("/index.html#library", "ghost-button")}>Open Explorer</a>
-        <a ${anchorAttrs(publicRepoUrl, "ghost-button")}>Open GitHub</a>
+        <a ${anchorAttrs("/index.html#start", "button")}>按场景开始</a>
+        <a ${anchorAttrs("/index.html#library", "text-button")}>我已经知道要找什么</a>
       </div>
     </div>
     <div class="hero-side">
-      <div class="hero-note"><strong>Copy-first</strong>详情页把 prompt 内容直接展开，并提供稳定的复制动作。</div>
-      <div class="hero-note"><strong>Scene-based</strong>保持应用场景作为最小组织单位，先判断用途，再进入具体 prompt。</div>
-      <div class="hero-note"><strong>Repo-backed</strong>每条 prompt 都能回到 GitHub 中对应的分类源文件。</div>
+      <div class="hero-note"><strong>主路径</strong>首页只有一个主入口: 先选场景。</div>
+      <div class="hero-note"><strong>多场景 tabs</strong>保留你熟悉的场景切换方式，但把它放到真正的一等位置。</div>
+      <div class="hero-note"><strong>先用后读</strong>详情页先给可复制正文，再把完整说明放到后面。</div>
     </div>
   </section>
 
-  <section class="stats-strip">
-    <div><span class="stat-value">${prompts.length}</span><span class="stat-label">Prompts</span></div>
-    <div><span class="stat-value">${categories.length}</span><span class="stat-label">Categories</span></div>
-    <div><span class="stat-value">Copy</span><span class="stat-label">Primary Action</span></div>
-    <div><span class="stat-value">${escapeHtml(syncLabel)}</span><span class="stat-label">Last Sync</span></div>
+  <section class="index-strip">
+    <div><span class="mono">${prompts.length}</span> 条 prompt</div>
+    <div><span class="mono">${sceneGroupMeta.length}</span> 个主场景</div>
+    <div>主动作: 复制并使用</div>
+    <div>最近同步: <span class="mono">${escapeHtml(syncLabel)}</span></div>
   </section>
 
-  <section class="section" id="categories">
-    <div class="section-header">
-      <div>
-        <p class="section-kicker">Categories</p>
-        <h2 class="section-title">按 prompt 场景分组</h2>
-      </div>
-      <div class="section-summary">保留 category 作为最小组织层，让你先判断大致用途，再进入具体 prompt。</div>
-    </div>
-    <div class="category-grid">
-      ${categories.map((category) => renderCategoryCard(category, prompts.filter((prompt) => prompt.category === category))).join("\n")}
-    </div>
-  </section>
-
-  <section class="section" id="featured">
-    <div class="section-header">
-      <div>
-        <p class="section-kicker">Featured</p>
-        <h2 class="section-title">先打开，再复制</h2>
-      </div>
-      <div class="section-summary">首页先呈现一组值得优先查看的 prompt；完整内容在详情页里展开，按场景浏览则放在上方 categories。</div>
-    </div>
-    <div class="prompt-grid">
-      ${featured.map((prompt) => renderPromptCard(prompt)).join("\n")}
-    </div>
-  </section>
+  ${renderSceneTabsSection({ prompts })}
   ${renderLibrarySection({
     prompts,
     categories,
-    title: "Prompt Explorer",
-    summary: "复用 prompt-hub 的核心能力：左侧筛选、角色/场景联动、关键词搜索，以及卡片级快速复制。",
+    title: "全部 Prompt 库",
+    summary: "当你已经知道自己要找什么，再进入这里做关键词、角色和场景的细筛。",
+    kicker: "全部库",
     initialCategory: "all"
   })}
 </main>`;
@@ -357,26 +446,48 @@ function buildHome({ index, prompts, categories }) {
 
 function buildCategoryPage(category, prompts, allPrompts, categories) {
   const meta = categoryMeta[category] || { label: category, summary: "Prompt collection." };
+  const featuredPrompts = prompts.slice(0, 6);
   return layout({
     title: `${meta.label} · Prompt Hub`,
     description: meta.summary,
     canonicalPath: categoryPath(category),
     body: `<main class="page">
   <section class="page-head">
-    <div class="breadcrumb"><a ${anchorAttrs("/index.html")}>Home</a><span>/</span><span>${escapeHtml(meta.label)}</span></div>
-    <p class="meta-kicker">Category</p>
+    <div class="breadcrumb"><a ${anchorAttrs("/index.html")}>首页</a><span>/</span><span>${escapeHtml(meta.label)}</span></div>
+    <p class="meta-kicker">场景</p>
     <div class="page-head-row">
       <h1 class="page-title">${escapeHtml(meta.label)}</h1>
-      <div class="detail-meta-line">${prompts.length} prompts</div>
+      <div class="detail-meta-line">${prompts.length} 条 prompt</div>
     </div>
     <p class="page-subtitle">${escapeHtml(meta.summary)}</p>
+    ${renderSceneLinkTabs(categories, category)}
+  </section>
+
+  <section class="section scene-focus">
+    <div class="section-header">
+      <div>
+        <p class="section-kicker">当前场景</p>
+        <h2 class="section-title">先看这个场景里最常用的 prompt</h2>
+      </div>
+      <div class="section-summary">先拿到这组高频 prompt，再决定要不要继续展开完整筛选。</div>
+    </div>
+    <div class="section-actions">
+      <a ${anchorAttrs("#library", "button")}>继续细筛</a>
+      <a ${anchorAttrs("/index.html#library", "text-button")}>去总库探索</a>
+    </div>
+    <div class="prompt-grid prompt-grid-scene">
+      ${featuredPrompts.map((prompt) => renderPromptCard(prompt)).join("\n")}
+    </div>
   </section>
   ${renderLibrarySection({
-    prompts: allPrompts,
+    prompts,
     categories,
-    title: `${meta.label} Explorer`,
-    summary: `默认聚焦在 ${meta.label}，但保留 prompt-hub 式的侧边栏筛选，你可以继续切换到别的场景或角色。`,
-    initialCategory: category
+    categoryIds: [category],
+    title: `${meta.label} 内继续筛选`,
+    summary: `如果你已经接近目标，就在 ${meta.label} 这个场景里继续按关键词或角色缩小范围。`,
+    kicker: "筛选",
+    initialCategory: category,
+    showCategoryFilters: false
   })}
 </main>`
   });
@@ -385,28 +496,17 @@ function buildCategoryPage(category, prompts, allPrompts, categories) {
 function buildDetailPage(prompt, related) {
   const categoryLabel = categoryMeta[prompt.category]?.label || prompt.category;
   const examples = Array.isArray(prompt.examples) ? prompt.examples : [];
+  const primaryExample = examples[0] || null;
+  const extraExamples = examples.slice(1);
   const tips = Array.isArray(prompt.tips) ? prompt.tips : [];
   const sources = Array.isArray(prompt.source) ? prompt.source : [];
   const inputs = Array.isArray(prompt.inputs) ? prompt.inputs : [];
   const steps = Array.isArray(prompt.steps) ? prompt.steps : [];
   const checklist = Array.isArray(prompt.checklist) ? prompt.checklist : [];
   const roleIds = Array.isArray(prompt.roleIds) ? prompt.roleIds : [];
-  const promptKind = compactText(prompt.kind || "prompt");
-  const promptKindLabel = promptKind === "skill" ? "prompt" : promptKind;
   const reviewedAt = prompt.metadata?.reviewedAt ? String(prompt.metadata.reviewedAt).slice(0, 10) : "";
   const schemaVersion = compactText(prompt.metadata?.schemaVersion || "");
-  const tableOfContents = [
-    { id: "overview", label: "Overview" },
-    { id: "content", label: "Prompt Content" },
-    prompt.goal ? { id: "goal", label: "Goal" } : null,
-    inputs.length ? { id: "inputs", label: "Inputs" } : null,
-    steps.length ? { id: "method", label: "Method" } : null,
-    prompt.outputContract ? { id: "output-contract", label: "Output Contract" } : null,
-    checklist.length ? { id: "checklist", label: "Checklist" } : null,
-    examples.length ? { id: "examples", label: "Examples" } : null,
-    tips.length ? { id: "tips", label: "Tips" } : null,
-    related.length ? { id: "related", label: "Related" } : null
-  ].filter(Boolean);
+  const hasGuide = Boolean(prompt.goal || inputs.length || steps.length || prompt.outputContract || checklist.length || extraExamples.length || tips.length);
 
   return layout({
     title: `${prompt.title} · Prompt Hub`,
@@ -414,8 +514,8 @@ function buildDetailPage(prompt, related) {
     canonicalPath: promptDetailPath(prompt),
     body: `<main class="page">
   <section class="page-head">
-    <div class="breadcrumb"><a ${anchorAttrs("/index.html")}>Home</a><span>/</span><a ${anchorAttrs(`/${categoryPath(prompt.category)}`)}>${escapeHtml(categoryLabel)}</a><span>/</span><span>${escapeHtml(prompt.title)}</span></div>
-    <p class="meta-kicker">Prompt</p>
+    <div class="breadcrumb"><a ${anchorAttrs("/index.html")}>首页</a><span>/</span><a ${anchorAttrs(`/${categoryPath(prompt.category)}`)}>${escapeHtml(categoryLabel)}</a><span>/</span><span>${escapeHtml(prompt.title)}</span></div>
+    <p class="meta-kicker">场景 Prompt</p>
     <h1 class="page-title">${escapeHtml(prompt.title)}</h1>
     <p class="page-subtitle">${escapeHtml(prompt.description)}</p>
   </section>
@@ -423,54 +523,81 @@ function buildDetailPage(prompt, related) {
   <section class="detail-layout">
     <article class="detail-main">
       <section class="detail-section" id="overview">
-        <p class="detail-kicker">Overview</p>
+        <p class="detail-kicker">这条 Prompt 适合做什么</p>
         <div class="detail-panel detail-stack">
           <p class="detail-copy">${escapeHtml(prompt.description)}</p>
           ${roleIds.length ? `<div class="tag-row">${roleIds.map((roleId) => `<span class="tag tag-role">${escapeHtml(roleMeta[roleId]?.label || roleId)}</span>`).join("")}</div>` : ""}
         </div>
       </section>
       <section class="detail-section" id="content">
-        <p class="detail-kicker">Prompt Content</p>
-        <div class="action-row">
-          ${promptCopyButton(prompt)}
-          <a ${anchorAttrs(prompt.githubUrl, "ghost-button")}>Open GitHub</a>
+        <div class="detail-head">
+          <div>
+            <p class="detail-kicker">现在就用</p>
+            <h2>直接复制</h2>
+          </div>
+          <div class="action-row">
+            ${promptCopyButton(prompt, "复制这条 Prompt")}
+            <a ${anchorAttrs(prompt.githubUrl, "text-button")}>查看源文件</a>
+          </div>
         </div>
-        <p class="copy-note">主动作是复制 prompt 本身；GitHub 作为源文件与版本历史入口。</p>
-        <pre>${escapeHtml(prompt.content)}</pre>
+        <p class="copy-note">如果你只想马上开始，复制下面正文就够了。完整说明放在下方的展开区。</p>
+        <div class="detail-panel detail-panel-strong">
+          <pre>${escapeHtml(prompt.content)}</pre>
+        </div>
       </section>
       ${
-        prompt.goal
-          ? `<section class="detail-section" id="goal">
-        <h2>Goal</h2>
-        <div class="detail-panel detail-copy">${escapeHtml(prompt.goal)}</div>
+        primaryExample
+          ? `<section class="detail-section" id="example">
+        <h2>最短示例</h2>
+        <div class="detail-grid detail-grid-single">
+          <article class="detail-card">
+            <div class="detail-card-copy"><strong>你可以这样给</strong></div>
+            <div class="detail-panel"><pre>${escapeHtml(primaryExample.input)}</pre></div>
+            <div class="detail-card-copy"><strong>你会得到</strong></div>
+            <div class="detail-panel"><pre>${escapeHtml(primaryExample.output)}</pre></div>
+          </article>
+        </div>
       </section>`
           : ""
       }
       ${
-        inputs.length
-          ? `<section class="detail-section" id="inputs">
-        <h2>Inputs</h2>
+        hasGuide
+          ? `<details class="detail-guide">
+        <summary>展开完整使用说明</summary>
+        <div class="detail-guide-body">
+          ${
+            prompt.goal
+              ? `<section class="detail-section" id="goal">
+          <h2>适用目标</h2>
+          <div class="detail-panel detail-copy">${escapeHtml(prompt.goal)}</div>
+        </section>`
+              : ""
+          }
+          ${
+            inputs.length
+              ? `<section class="detail-section" id="inputs">
+        <h2>你需要提供</h2>
         <div class="detail-grid">
           ${inputs
             .map(
               (item) => `<article class="detail-card">
             <div class="detail-card-head">
-              <h3>${escapeHtml(item.name || "Input")}</h3>
-              ${item.required ? '<span class="required-pill">Required</span>' : ""}
+              <h3>${escapeHtml(item.name || "输入项")}</h3>
+              ${item.required ? '<span class="required-pill">必填</span>' : ""}
             </div>
-            <p class="detail-card-copy">${escapeHtml(item.description || "No description yet.")}</p>
+            <p class="detail-card-copy">${escapeHtml(item.description || "暂无说明。")}</p>
             ${item.example ? `<div class="detail-panel"><pre>${escapeHtml(item.example)}</pre></div>` : ""}
           </article>`
             )
             .join("")}
         </div>
       </section>`
-          : ""
-      }
-      ${
-        steps.length
-          ? `<section class="detail-section" id="method">
-        <h2>Method</h2>
+              : ""
+          }
+          ${
+            steps.length
+              ? `<section class="detail-section" id="method">
+        <h2>使用步骤</h2>
         <ol class="detail-steps">
           ${steps
             .map(
@@ -485,60 +612,64 @@ function buildDetailPage(prompt, related) {
             .join("")}
         </ol>
       </section>`
-          : ""
-      }
-      ${
-        prompt.outputContract
-          ? `<section class="detail-section" id="output-contract">
-        <h2>Output Contract</h2>
+              : ""
+          }
+          ${
+            prompt.outputContract
+              ? `<section class="detail-section" id="output-contract">
+        <h2>输出格式</h2>
         <div class="detail-panel">
           <pre>${escapeHtml(prompt.outputContract)}</pre>
         </div>
       </section>`
-          : ""
-      }
-      ${
-        checklist.length
-          ? `<section class="detail-section" id="checklist">
-        <h2>Checklist</h2>
+              : ""
+          }
+          ${
+            checklist.length
+              ? `<section class="detail-section" id="checklist">
+        <h2>自查清单</h2>
         <ul class="detail-bullets">
           ${checklist.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
         </ul>
       </section>`
-          : ""
-      }
-      ${
-        examples.length
-          ? `<section class="detail-section" id="examples">
-        <h2>Examples</h2>
+              : ""
+          }
+          ${
+            extraExamples.length
+              ? `<section class="detail-section" id="examples">
+        <h2>更多示例</h2>
         <div class="detail-grid">
-          ${examples
+          ${extraExamples
             .map(
               (example) => `<article class="detail-card">
-            <h3>Example</h3>
-            <div class="detail-card-copy"><strong>Input</strong></div>
+            <h3>示例</h3>
+            <div class="detail-card-copy"><strong>你可以这样给</strong></div>
             <div class="detail-panel"><pre>${escapeHtml(example.input)}</pre></div>
-            <div class="detail-card-copy"><strong>Output</strong></div>
+            <div class="detail-card-copy"><strong>你会得到</strong></div>
             <div class="detail-panel"><pre>${escapeHtml(example.output)}</pre></div>
           </article>`
             )
             .join("")}
         </div>
       </section>`
-          : ""
-      }
-      ${
-        tips.length
-          ? `<section class="detail-section" id="tips">
-        <h2>Tips</h2>
+              : ""
+          }
+          ${
+            tips.length
+              ? `<section class="detail-section" id="tips">
+        <h2>使用提示</h2>
         <ul class="detail-bullets">${tips.map((tip) => `<li>${escapeHtml(tip)}</li>`).join("")}</ul>
       </section>`
+              : ""
+          }
+        </div>
+      </details>`
           : ""
       }
       ${
         related.length
           ? `<section class="detail-section" id="related">
-        <h2>Related Prompts</h2>
+        <h2>同场景推荐</h2>
         <div class="related-grid">${related
           .map(
             (item) => `<article class="related-card">
@@ -554,49 +685,38 @@ function buildDetailPage(prompt, related) {
     </article>
     <aside class="detail-side">
       <div class="side-block">
-        <p class="side-title">Contents</p>
-        <nav class="detail-toc">${tableOfContents.map((item) => `<a ${anchorAttrs(`#${item.id}`)}>${escapeHtml(item.label)}</a>`).join("")}</nav>
+        <p class="side-title">所在场景</p>
+        <div class="side-list"><div><a ${anchorAttrs(`/${categoryPath(prompt.category)}`)}>${escapeHtml(categoryLabel)}</a></div></div>
+      </div>
+      ${
+        roleIds.length
+          ? `<div class="side-block">
+        <p class="side-title">适合谁</p>
+        <div class="tag-row">${roleIds.map((roleId) => `<span class="tag tag-role">${escapeHtml(roleMeta[roleId]?.label || roleId)}</span>`).join("")}</div>
+      </div>`
+          : ""
+      }
+      <div class="side-block">
+        <p class="side-title">标签</p>
+        <div class="tag-row">${(prompt.tags || []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("") || '<span class="tag">暂无标签</span>'}</div>
       </div>
       <div class="side-block">
-        <p class="side-title">Format</p>
-        <div class="side-list">
-          <div>${escapeHtml(promptKindLabel)}</div>
-          <div>${escapeHtml(roleIds.length)} roles · ${escapeHtml((prompt.tags || []).length)} tags</div>
-        </div>
-      </div>
-      <div class="side-block">
-        <p class="side-title">Category</p>
-        <div class="side-list"><div><a ${anchorAttrs(`/${categoryPath(prompt.category)}`)}>${escapeHtml(categoryLabel)}</a></div><div>${escapeHtml(prompt.category)}</div></div>
-      </div>
-      <div class="side-block">
-        <p class="side-title">Tags</p>
-        <div class="tag-row">${(prompt.tags || []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("") || '<span class="tag">No tags</span>'}</div>
-      </div>
-      <div class="side-block">
-        <p class="side-title">Source</p>
-        <div class="side-list"><div><a ${anchorAttrs(prompt.githubUrl)}>Category JSON on GitHub</a></div><div><a ${anchorAttrs(publicRepoUrl)}>Prompt Site Repo</a></div></div>
+        <p class="side-title">源文件</p>
+        <div class="side-list"><div><a ${anchorAttrs(prompt.githubUrl)}>查看 GitHub 中的分类源文件</a></div><div><a ${anchorAttrs(publicRepoUrl)}>查看站点仓库</a></div></div>
       </div>
       ${
         sources.length
           ? `<div class="side-block">
-        <p class="side-title">References</p>
+        <p class="side-title">参考链接</p>
         <div class="side-list">${sources.map((item) => `<div>${renderLinkedValue(item)}</div>`).join("")}</div>
       </div>`
           : ""
       }
       <div class="side-block">
-        <p class="side-title">Usage Flow</p>
-        <div class="side-list">
-          <div>1. Browse by scene or role.</div>
-          <div>2. Open the full prompt.</div>
-          <div>3. Copy, adapt, then trace back to source if needed.</div>
-        </div>
-      </div>
-      <div class="side-block">
-        <p class="side-title">Metadata</p>
+        <p class="side-title">版本信息</p>
         <div class="side-list">
           <div><span class="mono">${escapeHtml(prompt.id)}</span></div>
-          ${reviewedAt ? `<div>Reviewed: ${escapeHtml(reviewedAt)}</div>` : ""}
+          ${reviewedAt ? `<div>更新记录: ${escapeHtml(reviewedAt)}</div>` : ""}
           ${schemaVersion ? `<div>Schema: ${escapeHtml(schemaVersion)}</div>` : ""}
         </div>
       </div>
