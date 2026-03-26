@@ -381,12 +381,28 @@ pre,
   padding: 22px;
 }
 
-.detail-main pre {
+.detail-panel {
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid var(--line-soft);
+}
+
+.detail-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.detail-main pre,
+.detail-panel pre {
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
   font-size: 0.94rem;
   line-height: 1.62;
+}
+
+.detail-copy {
+  margin: 0;
 }
 
 .detail-section + .detail-section {
@@ -404,6 +420,93 @@ pre,
 
 .detail-meta-copy {
   margin-top: 12px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.detail-card {
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid var(--line-soft);
+}
+
+.detail-card-head,
+.detail-step {
+  display: grid;
+  gap: 12px;
+}
+
+.detail-card-head {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.detail-card h3,
+.detail-step h3 {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.detail-card-copy {
+  margin: 10px 0 0;
+  color: var(--ink-soft);
+}
+
+.required-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.detail-steps,
+.detail-bullets,
+.detail-toc {
+  margin: 0;
+  padding: 0;
+}
+
+.detail-steps {
+  display: grid;
+  gap: 14px;
+  list-style: none;
+}
+
+.detail-step {
+  grid-template-columns: auto minmax(0, 1fr);
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid var(--line-soft);
+}
+
+.detail-step-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.84rem;
+}
+
+.detail-bullets {
+  display: grid;
+  gap: 10px;
+  padding-left: 18px;
+}
+
+.detail-bullets li {
+  color: var(--ink-soft);
 }
 
 .copy-note {
@@ -430,6 +533,23 @@ pre,
   gap: 10px;
 }
 
+.detail-toc {
+  display: grid;
+  gap: 8px;
+}
+
+.detail-toc a {
+  display: block;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 0.92rem;
+}
+
+.detail-toc a:hover {
+  text-decoration: none;
+  border-bottom-color: var(--line);
+}
+
 .related-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -446,6 +566,7 @@ pre,
   .hero,
   .detail-layout,
   .category-grid,
+  .detail-grid,
   .prompt-grid,
   .related-grid {
     grid-template-columns: 1fr;

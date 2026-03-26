@@ -27,6 +27,24 @@ const categoryMeta = {
   "p3-project-management": { label: "项目管理", summary: "聚焦协作推进、流程组织和项目节奏。" }
 };
 
+const roleMeta = {
+  developer: { label: "开发", summary: "代码、架构、工程实现与调试。" },
+  designer: { label: "设计", summary: "视觉表达、体验设计与创意生成。" },
+  product: { label: "产品", summary: "需求定义、方案判断与协同推进。" },
+  writer: { label: "写作", summary: "内容组织、表达优化与文档写作。" },
+  researcher: { label: "研究", summary: "调研、比较、证据整理与分析。" },
+  analysis: { label: "分析", summary: "偏分析型、专业型与结构化判断任务。" }
+};
+
+const roleCategoryMap = {
+  developer: ["coding", "p0-core-dev", "p1-creative-tools", "p2-professional-tools"],
+  designer: ["design", "p1-creative-tools"],
+  product: ["product", "p3-project-management"],
+  writer: ["writing", "p1-creative-tools"],
+  researcher: ["research"],
+  analysis: ["research", "p2-professional-tools"]
+};
+
 function normalizeUrl(value) {
   return String(value || "").trim().replace(/\/+$/, "");
 }
@@ -66,6 +84,10 @@ function slugPath(...parts) {
   return parts.filter(Boolean).join("/");
 }
 
+function compactText(value) {
+  return String(value || "").replace(/\s+/g, " ").trim();
+}
+
 function repoBlobPath(filePath) {
   return `${publicRepoUrl}/blob/${publicRepoBranch}/${filePath.replace(/^\/+/, "")}`;
 }
@@ -82,12 +104,42 @@ function categoryPath(category) {
   return slugPath("categories", category, "index.html");
 }
 
+function derivePromptRoles(prompt) {
+  return Object.keys(roleCategoryMap).filter((roleId) => roleCategoryMap[roleId].includes(prompt.category));
+}
+
+function buildPromptSearchText(prompt) {
+  const inputs = Array.isArray(prompt.inputs)
+    ? prompt.inputs.flatMap((item) => [item?.name, item?.description, item?.example])
+    : [];
+  const steps = Array.isArray(prompt.steps)
+    ? prompt.steps.flatMap((item) => [item?.title, item?.description])
+    : [];
+
+  return compactText(
+    [
+      prompt.title,
+      prompt.description,
+      prompt.content,
+      prompt.goal,
+      prompt.outputContract,
+      categoryMeta[prompt.category]?.label,
+      prompt.category,
+      ...(prompt.tags || []),
+      ...(prompt.tips || []),
+      ...(prompt.checklist || []),
+      ...inputs,
+      ...steps
+    ].join(" ")
+  );
+}
+
 function layout({ title, description, body, canonicalPath }) {
   const canonical = `${siteOrigin}/${canonicalPath.replace(/^\/+/, "")}`;
   const navLinks = [
     { label: "Home", href: "/index.html" },
     { label: "Categories", href: "/index.html#categories" },
-    { label: "Featured", href: "/index.html#prompts" },
+    { label: "Explorer", href: "/index.html#library" },
     { label: "GitHub", href: publicRepoUrl }
   ];
 
@@ -106,7 +158,7 @@ function layout({ title, description, body, canonicalPath }) {
     <div class="site-shell">
       <header class="topbar">
         <div class="topbar-inner">
-          <a class="brand" href="/index.html"><strong>Prompt</strong><span>Site</span></a>
+          <a class="brand" href="/index.html"><strong>Prompt</strong><span>Hub</span></a>
           <nav class="nav">
             ${navLinks.map((link) => `<a ${anchorAttrs(link.href)}>${escapeHtml(link.label)}</a>`).join("")}
           </nav>
@@ -114,7 +166,7 @@ function layout({ title, description, body, canonicalPath }) {
       </header>
       ${body}
       <footer class="footer">
-        <div>Prompt Site · copy-first prompt library · source repo <a ${anchorAttrs(publicRepoUrl)}>EOMZON/prompt-site</a> · author <a ${anchorAttrs(authorGithubUrl)}>@EOMZON</a></div>
+        <div>Prompt Hub · prompt-first library · source repo <a ${anchorAttrs(publicRepoUrl)}>EOMZON/prompt-site</a> · author <a ${anchorAttrs(authorGithubUrl)}>@EOMZON</a></div>
       </footer>
     </div>
     <script src="/prompt.js"></script>
@@ -124,13 +176,15 @@ function layout({ title, description, body, canonicalPath }) {
 }
 
 function renderPromptCard(prompt) {
-  return `<article class="prompt-card">
+  const roleBadges = (prompt.roleIds || []).slice(0, 3).map((roleId) => `<span class="tag tag-role">${escapeHtml(roleMeta[roleId]?.label || roleId)}</span>`).join("");
+  return `<article class="prompt-card" data-prompt-card data-prompt-category="${escapeHtml(prompt.category)}" data-prompt-roles="${escapeHtml((prompt.roleIds || []).join(","))}" data-prompt-search="${escapeHtml(prompt.searchText || "")}">
   <p class="card-kicker">${escapeHtml(categoryMeta[prompt.category]?.label || prompt.category)}</p>
   <h3 class="prompt-card-title"><a ${anchorAttrs(`/${promptDetailPath(prompt)}`)}>${escapeHtml(prompt.title)}</a></h3>
   <div class="prompt-card-meta">${escapeHtml(prompt.category)} · ${escapeHtml(prompt.id)}</div>
   <p class="prompt-card-copy">${escapeHtml(prompt.description)}</p>
-  <div class="tag-row">${(prompt.tags || []).slice(0, 4).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div>
+  <div class="tag-row">${roleBadges}${(prompt.tags || []).slice(0, 4).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div>
   <div class="action-row">
+    ${promptCopyButton(prompt, "Quick Copy")}
     <a ${anchorAttrs(`/${promptDetailPath(prompt)}`, "ghost-button")}>Open Prompt</a>
     <a ${anchorAttrs(prompt.githubUrl, "ghost-button")}>GitHub</a>
   </div>
@@ -151,6 +205,85 @@ function renderCategoryCard(category, prompts) {
 </article>`;
 }
 
+function renderLibrarySection({
+  prompts,
+  categories,
+  title,
+  summary,
+  kicker = "Explorer",
+  initialCategory = "all"
+}) {
+  const categoryButtons = [
+    `<button class="filter-button" type="button" data-filter-category="all"><span>全部 Prompt</span><span class="filter-count">${prompts.length}</span></button>`,
+    ...categories.map((category) => {
+      const count = prompts.filter((prompt) => prompt.category === category).length;
+      return `<button class="filter-button" type="button" data-filter-category="${escapeHtml(category)}"><span>${escapeHtml(categoryMeta[category]?.label || category)}</span><span class="filter-count">${count}</span></button>`;
+    })
+  ].join("");
+
+  const roleButtons = Object.keys(roleMeta)
+    .map((roleId) => {
+      const count = prompts.filter((prompt) => (prompt.roleIds || []).includes(roleId)).length;
+      return `<button class="filter-button" type="button" data-filter-role="${escapeHtml(roleId)}"><span>${escapeHtml(roleMeta[roleId].label)}</span><span class="filter-count">${count}</span></button>`;
+    })
+    .join("");
+
+  return `<section class="section library-section" id="library" data-library data-initial-category="${escapeHtml(initialCategory)}">
+    <div class="section-header">
+      <div>
+        <p class="section-kicker">${escapeHtml(kicker)}</p>
+        <h2 class="section-title">${escapeHtml(title)}</h2>
+      </div>
+      <div class="section-summary">${escapeHtml(summary)}</div>
+    </div>
+    <div class="library-shell">
+      <aside class="library-sidebar" data-library-sidebar>
+        <div class="filter-block">
+          <div class="filter-head">
+            <p class="side-title">Search</p>
+            <button class="text-button" type="button" data-library-clear>Clear</button>
+          </div>
+          <input class="search-input" type="search" placeholder="搜索标题、描述、正文、标签" data-library-search />
+          <p class="filter-copy">保留 prompt-hub 的基础使用链路：先筛选，再打开，最后复制。</p>
+        </div>
+        <div class="filter-block">
+          <p class="side-title">Scenes</p>
+          <div class="filter-stack">${categoryButtons}</div>
+        </div>
+        <div class="filter-block">
+          <p class="side-title">Roles</p>
+          <div class="filter-stack">${roleButtons}</div>
+        </div>
+      </aside>
+      <div class="library-main">
+        <div class="library-toolbar">
+          <div>
+            <div class="library-status"><span class="mono" data-library-count>${prompts.length}</span> results</div>
+            <div class="library-summary" data-library-summary>全部 prompt</div>
+          </div>
+          <button class="ghost-button library-toggle" type="button" data-library-toggle>Filters</button>
+        </div>
+        <div class="prompt-grid prompt-grid-library">
+          ${prompts.map((prompt) => renderPromptCard(prompt)).join("\n")}
+        </div>
+        <div class="empty-card" data-library-empty hidden>
+          <p class="card-kicker">Empty</p>
+          <h3 class="prompt-card-title">没有找到匹配的 prompt</h3>
+          <p class="empty-copy">可以试试更短的关键词，或者先清空角色与场景筛选。</p>
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
+function renderLinkedValue(value) {
+  const href = String(value || "").trim();
+  if (isExternalHref(href)) {
+    return `<a ${anchorAttrs(href)}>${escapeHtml(href)}</a>`;
+  }
+  return escapeHtml(href);
+}
+
 function buildHome({ index, prompts, categories }) {
   const featured = prompts.slice(0, 12);
   const syncLabel = index.lastUpdated ? String(index.lastUpdated).slice(0, 10) : "Live";
@@ -162,7 +295,7 @@ function buildHome({ index, prompts, categories }) {
       <p class="hero-copy">这个站点只做 prompt 本身：按场景浏览，打开详情，直接复制，需要时再回到 GitHub 查看源文件和版本历史。</p>
       <div class="hero-actions">
         <a ${anchorAttrs("/index.html#categories", "button")}>Browse Categories</a>
-        <a ${anchorAttrs("/index.html#prompts", "ghost-button")}>Browse Featured</a>
+        <a ${anchorAttrs("/index.html#library", "ghost-button")}>Open Explorer</a>
         <a ${anchorAttrs(publicRepoUrl, "ghost-button")}>Open GitHub</a>
       </div>
     </div>
@@ -193,7 +326,7 @@ function buildHome({ index, prompts, categories }) {
     </div>
   </section>
 
-  <section class="section" id="prompts">
+  <section class="section" id="featured">
     <div class="section-header">
       <div>
         <p class="section-kicker">Featured</p>
@@ -205,20 +338,27 @@ function buildHome({ index, prompts, categories }) {
       ${featured.map((prompt) => renderPromptCard(prompt)).join("\n")}
     </div>
   </section>
+  ${renderLibrarySection({
+    prompts,
+    categories,
+    title: "Prompt Explorer",
+    summary: "复用 prompt-hub 的核心能力：左侧筛选、角色/场景联动、关键词搜索，以及卡片级快速复制。",
+    initialCategory: "all"
+  })}
 </main>`;
 
   return layout({
-    title: "Prompt Site",
-    description: "Prompt-only site for browsing, copying, and sourcing reusable prompts.",
+    title: "Prompt Hub",
+    description: "Prompt-first site for browsing, copying, and sourcing reusable prompts.",
     canonicalPath: "index.html",
     body
   });
 }
 
-function buildCategoryPage(category, prompts) {
+function buildCategoryPage(category, prompts, allPrompts, categories) {
   const meta = categoryMeta[category] || { label: category, summary: "Prompt collection." };
   return layout({
-    title: `${meta.label} · Prompt Site`,
+    title: `${meta.label} · Prompt Hub`,
     description: meta.summary,
     canonicalPath: categoryPath(category),
     body: `<main class="page">
@@ -231,11 +371,13 @@ function buildCategoryPage(category, prompts) {
     </div>
     <p class="page-subtitle">${escapeHtml(meta.summary)}</p>
   </section>
-  <section class="section">
-    <div class="prompt-grid">
-      ${prompts.map((prompt) => renderPromptCard(prompt)).join("\n")}
-    </div>
-  </section>
+  ${renderLibrarySection({
+    prompts: allPrompts,
+    categories,
+    title: `${meta.label} Explorer`,
+    summary: `默认聚焦在 ${meta.label}，但保留 prompt-hub 式的侧边栏筛选，你可以继续切换到别的场景或角色。`,
+    initialCategory: category
+  })}
 </main>`
   });
 }
@@ -245,9 +387,29 @@ function buildDetailPage(prompt, related) {
   const examples = Array.isArray(prompt.examples) ? prompt.examples : [];
   const tips = Array.isArray(prompt.tips) ? prompt.tips : [];
   const sources = Array.isArray(prompt.source) ? prompt.source : [];
+  const inputs = Array.isArray(prompt.inputs) ? prompt.inputs : [];
+  const steps = Array.isArray(prompt.steps) ? prompt.steps : [];
+  const checklist = Array.isArray(prompt.checklist) ? prompt.checklist : [];
+  const roleIds = Array.isArray(prompt.roleIds) ? prompt.roleIds : [];
+  const promptKind = compactText(prompt.kind || "prompt");
+  const promptKindLabel = promptKind === "skill" ? "prompt" : promptKind;
+  const reviewedAt = prompt.metadata?.reviewedAt ? String(prompt.metadata.reviewedAt).slice(0, 10) : "";
+  const schemaVersion = compactText(prompt.metadata?.schemaVersion || "");
+  const tableOfContents = [
+    { id: "overview", label: "Overview" },
+    { id: "content", label: "Prompt Content" },
+    prompt.goal ? { id: "goal", label: "Goal" } : null,
+    inputs.length ? { id: "inputs", label: "Inputs" } : null,
+    steps.length ? { id: "method", label: "Method" } : null,
+    prompt.outputContract ? { id: "output-contract", label: "Output Contract" } : null,
+    checklist.length ? { id: "checklist", label: "Checklist" } : null,
+    examples.length ? { id: "examples", label: "Examples" } : null,
+    tips.length ? { id: "tips", label: "Tips" } : null,
+    related.length ? { id: "related", label: "Related" } : null
+  ].filter(Boolean);
 
   return layout({
-    title: `${prompt.title} · Prompt Site`,
+    title: `${prompt.title} · Prompt Hub`,
     description: prompt.description,
     canonicalPath: promptDetailPath(prompt),
     body: `<main class="page">
@@ -260,7 +422,14 @@ function buildDetailPage(prompt, related) {
 
   <section class="detail-layout">
     <article class="detail-main">
-      <section class="detail-section">
+      <section class="detail-section" id="overview">
+        <p class="detail-kicker">Overview</p>
+        <div class="detail-panel detail-stack">
+          <p class="detail-copy">${escapeHtml(prompt.description)}</p>
+          ${roleIds.length ? `<div class="tag-row">${roleIds.map((roleId) => `<span class="tag tag-role">${escapeHtml(roleMeta[roleId]?.label || roleId)}</span>`).join("")}</div>` : ""}
+        </div>
+      </section>
+      <section class="detail-section" id="content">
         <p class="detail-kicker">Prompt Content</p>
         <div class="action-row">
           ${promptCopyButton(prompt)}
@@ -270,28 +439,105 @@ function buildDetailPage(prompt, related) {
         <pre>${escapeHtml(prompt.content)}</pre>
       </section>
       ${
+        prompt.goal
+          ? `<section class="detail-section" id="goal">
+        <h2>Goal</h2>
+        <div class="detail-panel detail-copy">${escapeHtml(prompt.goal)}</div>
+      </section>`
+          : ""
+      }
+      ${
+        inputs.length
+          ? `<section class="detail-section" id="inputs">
+        <h2>Inputs</h2>
+        <div class="detail-grid">
+          ${inputs
+            .map(
+              (item) => `<article class="detail-card">
+            <div class="detail-card-head">
+              <h3>${escapeHtml(item.name || "Input")}</h3>
+              ${item.required ? '<span class="required-pill">Required</span>' : ""}
+            </div>
+            <p class="detail-card-copy">${escapeHtml(item.description || "No description yet.")}</p>
+            ${item.example ? `<div class="detail-panel"><pre>${escapeHtml(item.example)}</pre></div>` : ""}
+          </article>`
+            )
+            .join("")}
+        </div>
+      </section>`
+          : ""
+      }
+      ${
+        steps.length
+          ? `<section class="detail-section" id="method">
+        <h2>Method</h2>
+        <ol class="detail-steps">
+          ${steps
+            .map(
+              (step, index) => `<li class="detail-step">
+            <div class="detail-step-index">${index + 1}</div>
+            <div>
+              <h3>${escapeHtml(step.title || `Step ${index + 1}`)}</h3>
+              <p class="detail-card-copy">${escapeHtml(step.description || "")}</p>
+            </div>
+          </li>`
+            )
+            .join("")}
+        </ol>
+      </section>`
+          : ""
+      }
+      ${
+        prompt.outputContract
+          ? `<section class="detail-section" id="output-contract">
+        <h2>Output Contract</h2>
+        <div class="detail-panel">
+          <pre>${escapeHtml(prompt.outputContract)}</pre>
+        </div>
+      </section>`
+          : ""
+      }
+      ${
+        checklist.length
+          ? `<section class="detail-section" id="checklist">
+        <h2>Checklist</h2>
+        <ul class="detail-bullets">
+          ${checklist.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+        </ul>
+      </section>`
+          : ""
+      }
+      ${
         examples.length
-          ? `<section class="detail-section">
+          ? `<section class="detail-section" id="examples">
         <h2>Examples</h2>
-        ${examples
-          .map(
-            (example) => `<div class="detail-meta-copy"><strong>Input</strong><br />${escapeHtml(example.input)}<br /><br /><strong>Output</strong><br />${escapeHtml(example.output)}</div>`
-          )
-          .join("")}
+        <div class="detail-grid">
+          ${examples
+            .map(
+              (example) => `<article class="detail-card">
+            <h3>Example</h3>
+            <div class="detail-card-copy"><strong>Input</strong></div>
+            <div class="detail-panel"><pre>${escapeHtml(example.input)}</pre></div>
+            <div class="detail-card-copy"><strong>Output</strong></div>
+            <div class="detail-panel"><pre>${escapeHtml(example.output)}</pre></div>
+          </article>`
+            )
+            .join("")}
+        </div>
       </section>`
           : ""
       }
       ${
         tips.length
-          ? `<section class="detail-section">
+          ? `<section class="detail-section" id="tips">
         <h2>Tips</h2>
-        <div class="side-list">${tips.map((tip) => `<div>${escapeHtml(tip)}</div>`).join("")}</div>
+        <ul class="detail-bullets">${tips.map((tip) => `<li>${escapeHtml(tip)}</li>`).join("")}</ul>
       </section>`
           : ""
       }
       ${
         related.length
-          ? `<section class="detail-section">
+          ? `<section class="detail-section" id="related">
         <h2>Related Prompts</h2>
         <div class="related-grid">${related
           .map(
@@ -308,6 +554,17 @@ function buildDetailPage(prompt, related) {
     </article>
     <aside class="detail-side">
       <div class="side-block">
+        <p class="side-title">Contents</p>
+        <nav class="detail-toc">${tableOfContents.map((item) => `<a ${anchorAttrs(`#${item.id}`)}>${escapeHtml(item.label)}</a>`).join("")}</nav>
+      </div>
+      <div class="side-block">
+        <p class="side-title">Format</p>
+        <div class="side-list">
+          <div>${escapeHtml(promptKindLabel)}</div>
+          <div>${escapeHtml(roleIds.length)} roles · ${escapeHtml((prompt.tags || []).length)} tags</div>
+        </div>
+      </div>
+      <div class="side-block">
         <p class="side-title">Category</p>
         <div class="side-list"><div><a ${anchorAttrs(`/${categoryPath(prompt.category)}`)}>${escapeHtml(categoryLabel)}</a></div><div>${escapeHtml(prompt.category)}</div></div>
       </div>
@@ -323,13 +580,25 @@ function buildDetailPage(prompt, related) {
         sources.length
           ? `<div class="side-block">
         <p class="side-title">References</p>
-        <div class="side-list">${sources.map((item) => `<div>${escapeHtml(item)}</div>`).join("")}</div>
+        <div class="side-list">${sources.map((item) => `<div>${renderLinkedValue(item)}</div>`).join("")}</div>
       </div>`
           : ""
       }
       <div class="side-block">
-        <p class="side-title">Prompt ID</p>
-        <div class="side-list"><div class="mono">${escapeHtml(prompt.id)}</div></div>
+        <p class="side-title">Usage Flow</p>
+        <div class="side-list">
+          <div>1. Browse by scene or role.</div>
+          <div>2. Open the full prompt.</div>
+          <div>3. Copy, adapt, then trace back to source if needed.</div>
+        </div>
+      </div>
+      <div class="side-block">
+        <p class="side-title">Metadata</p>
+        <div class="side-list">
+          <div><span class="mono">${escapeHtml(prompt.id)}</span></div>
+          ${reviewedAt ? `<div>Reviewed: ${escapeHtml(reviewedAt)}</div>` : ""}
+          ${schemaVersion ? `<div>Schema: ${escapeHtml(schemaVersion)}</div>` : ""}
+        </div>
       </div>
     </aside>
   </section>
@@ -357,6 +626,8 @@ function main() {
       ...prompt,
       categoryOrder,
       entryOrder,
+      roleIds: derivePromptRoles(prompt),
+      searchText: buildPromptSearchText(prompt),
       sourceFile: `data/prompts/${category}.json`,
       githubUrl: repoBlobPath(`data/prompts/${category}.json`)
     }));
@@ -376,7 +647,7 @@ function main() {
 
   for (const category of categories) {
     const categoryPrompts = prompts.filter((prompt) => prompt.category === category);
-    writeFile(path.join(distRoot, categoryPath(category)), buildCategoryPage(category, categoryPrompts));
+    writeFile(path.join(distRoot, categoryPath(category)), buildCategoryPage(category, categoryPrompts, prompts, categories));
     writeFile(
       path.join(distRoot, "data", "categories", `${category}.json`),
       JSON.stringify(categoryPrompts, null, 2) + "\n"
